@@ -1,0 +1,3646 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Contract Quest Student</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: transparent !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --main-surface-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --red: light-dark(rgb(186 38 35), rgb(250 66 62));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 10px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-visualize-standalone] {
+  background-color: var(--background) !important;
+}
+
+/* Generic mobile code-block hosts provide light/dark mode but no series palette.
+   AppBlock hosts set all six variables themselves. */
+:root:not([data-app-block-surface]) {
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(#f3883b, #f59a56);
+  --viz-series-3: light-dark(#5dc977, #74d58b);
+  --viz-series-4: light-dark(#eb77b1, #f08fc0);
+  --viz-series-5: light-dark(#9b79ec, #aa91ef);
+  --viz-series-6: light-dark(#3ab9b1, #5acbc2);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+:root:not([data-app-block-surface]) > body {
+  padding: 12px;
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The bundled tooltip runtime owns [data-tooltip]. AppBlock's CSS-only
+   pseudo-tooltip can widen dense grids even while hidden. */
+main [data-tooltip]::after {
+  content: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--interactive-label-primary-default, var(--primary-foreground));
+  background: var(--interactive-bg-primary-default, var(--foreground));
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(
+    in srgb,
+    var(--interactive-label-primary-default, var(--primary-foreground)) 50%,
+    transparent
+  );
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+</style>
+</head>
+<body>
+<div id="contract-quest-student" class="contract-quest-root">
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <section class="card quest-shell" aria-labelledby="quest-accessible-title">
+    <h1 id="quest-accessible-title" class="sr-only">Contract Quest: From Promise to Contract</h1>
+
+    <header class="quest-bar">
+      <span class="quest-brand" aria-hidden="true">CONTRACT QUEST 2000</span>
+      <div class="viz-row quest-status">
+        <span class="viz-badge" id="quest-case-badge">READY</span>
+        <span id="quest-lesson-status">Lesson: <strong id="quest-lesson-progress">0/5</strong></span>
+        <span id="quest-case-status" hidden>Cases solved: <strong id="quest-solved">0/6</strong></span>
+        <span id="quest-hint-status" hidden>Hints used: <strong id="quest-hints">0</strong></span>
+        <label class="form-check form-switch" for="quest-sound">
+          <input class="form-check-input" id="quest-sound" type="checkbox">
+          <span class="form-check-label">Sound</span>
+        </label>
+      </div>
+    </header>
+
+    <section id="quest-intro" class="quest-intro">
+      <div class="intro-copy">
+        <span class="viz-badge">MODULE 01 · FOUNDATION</span>
+        <h2>When does a promise become a contract?</h2>
+        <p>First learn the legal transformation. Then enter six stories and use the doctrine yourself.</p>
+      </div>
+
+      <ol class="intro-steps" aria-label="Module structure">
+        <li><strong>Learn</strong><span>the vocabulary in sections 2(a)–(j).</span></li>
+        <li><strong>See</strong><span>how section 10 tests enforceability.</span></li>
+        <li><strong>Apply</strong><span>the framework to six playable cases.</span></li>
+      </ol>
+
+      <div class="guide-row">
+        <div class="pixel-guide" aria-hidden="true">
+          <span class="guide-eyes">··</span>
+          <span class="guide-mouth">⌣</span>
+        </div>
+        <p><strong>Guide Bot:</strong> I will animate the doctrine first. A two-question checkpoint will unlock the case lab.</p>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="quest-start">Begin the animated lesson</button>
+    </section>
+
+    <section id="quest-lesson" class="lesson-area" hidden aria-labelledby="quest-lesson-heading">
+      <div class="lesson-progress-row">
+        <div id="quest-lesson-dots" class="progress-dots" aria-label="Lesson progress"></div>
+        <span id="quest-lesson-count" class="secondary-copy"></span>
+      </div>
+
+      <section class="lesson-scene" data-lesson-scene="0" aria-labelledby="quest-lesson-heading">
+        <div class="lesson-heading">
+          <span class="section-kicker">CONCEPT 1 · THE PUZZLE</span>
+          <h2 id="quest-lesson-heading">The word “promise” is not enough</h2>
+          <p>Contract law asks what the speaker was doing—not merely which word was used.</p>
+        </div>
+
+        <div class="promise-worlds" role="img" aria-label="A social promise is contrasted with a definite commercial proposal">
+          <section class="promise-world">
+            <span class="world-label">HOSTEL · 7:00 A.M.</span>
+            <div class="pixel-pair" aria-hidden="true">
+              <span class="pixel-person is-one"></span>
+              <span class="pixel-person is-two"></span>
+            </div>
+            <p class="lesson-speech">“I promise I will wake you before the examination.”</p>
+            <strong class="world-result">Social assurance</strong>
+            <span>No request for assent to a legal bargain</span>
+          </section>
+
+          <section class="promise-world">
+            <span class="world-label">MARKET · 5:00 P.M.</span>
+            <div class="pixel-pair" aria-hidden="true">
+              <span class="pixel-person is-two"></span>
+              <span class="pixel-person is-one"></span>
+            </div>
+            <p class="lesson-speech">“I will sell you this identified scooter for ₹28,000. Reply by six.”</p>
+            <strong class="world-result">Potential legal proposal</strong>
+            <span>Definite terms expressed to obtain assent</span>
+          </section>
+        </div>
+
+        <p class="lesson-key"><strong>First question:</strong> Was willingness expressed with a view to obtaining the other person’s assent? That is the statutory idea of a proposal in section 2(a).</p>
+      </section>
+
+      <section class="lesson-scene" data-lesson-scene="1" aria-labelledby="lesson-scene-two" hidden>
+        <div class="lesson-heading">
+          <span class="section-kicker">CONCEPT 2 · THE LEGAL CHAIN</span>
+          <h2 id="lesson-scene-two">Section 2 is a vocabulary machine</h2>
+          <p>Each legal word describes a different stage. The stages should not be collapsed into one another.</p>
+        </div>
+
+        <ol class="lesson-chain" aria-label="Proposal becomes an accepted proposal, then a promise, an agreement and finally a contract">
+          <li style="--lesson-delay: 0ms"><span>s 2(a)</span><strong>Proposal</strong><small>Willingness expressed to obtain assent</small></li>
+          <li style="--lesson-delay: 120ms"><span>s 2(b)</span><strong>Acceptance</strong><small>The recipient signifies assent</small></li>
+          <li style="--lesson-delay: 240ms"><span>s 2(b)</span><strong>Promise</strong><small>The accepted proposal</small></li>
+          <li style="--lesson-delay: 360ms"><span>s 2(e)</span><strong>Agreement</strong><small>Promises forming consideration for each other</small></li>
+          <li style="--lesson-delay: 480ms"><span>s 2(h)</span><strong>Contract</strong><small>An agreement enforceable by law</small></li>
+        </ol>
+
+        <div class="consideration-charge">
+          <span class="charge-label">s 2(d) · CONSIDERATION</span>
+          <span class="charge-track" aria-hidden="true"><span></span></span>
+          <p>The act, abstinence or promise given at the promisor’s desire supplies the legally relevant exchange.</p>
+        </div>
+
+        <p class="lesson-key"><strong>Central distinction:</strong> acceptance creates a promise; promises supported by the relevant exchange form an agreement; enforceability turns the agreement into a contract.</p>
+      </section>
+
+      <section class="lesson-scene" data-lesson-scene="2" aria-labelledby="lesson-scene-three" hidden>
+        <div class="lesson-heading">
+          <span class="section-kicker">CONCEPT 3 · THE ENFORCEABILITY GATE</span>
+          <h2 id="lesson-scene-three">Section 10 asks whether the agreement may enter contract law</h2>
+          <p>Formation gets the transaction to “agreement”. Section 10 then checks whether law will recognise it as a contract.</p>
+        </div>
+
+        <div class="gate-machine" role="img" aria-label="An agreement passes through the section 10 requirements and emerges as a contract">
+          <div class="gate-token agreement-token"><span>AGREEMENT</span></div>
+
+          <div class="section-gate">
+            <span class="gate-title">SECTION 10</span>
+            <div class="gate-doors" aria-hidden="true">
+              <span class="gate-door is-left"></span>
+              <span class="gate-door is-right"></span>
+            </div>
+          </div>
+
+          <div class="gate-token contract-token"><span>CONTRACT</span></div>
+        </div>
+
+        <ul class="gate-checks" aria-label="Section 10 requirements">
+          <li style="--lesson-delay: 0ms">Parties competent to contract</li>
+          <li style="--lesson-delay: 100ms">Consent freely given</li>
+          <li style="--lesson-delay: 200ms">Lawful consideration</li>
+          <li style="--lesson-delay: 300ms">Lawful object</li>
+          <li style="--lesson-delay: 400ms">Not expressly declared void</li>
+        </ul>
+
+        <p class="lesson-key"><strong>Important:</strong> section 10 also preserves other laws that require writing, witnesses or registration. The gate is therefore a legal checklist, not a magic word.</p>
+      </section>
+
+      <section class="lesson-scene" data-lesson-scene="3" aria-labelledby="lesson-scene-four" hidden>
+        <div class="lesson-heading">
+          <span class="section-kicker">CONCEPT 4 · FOUR POSSIBLE DESTINATIONS</span>
+          <h2 id="lesson-scene-four">The timing and location of the defect determine the status</h2>
+          <p>Do not use “void”, “voidable” and “becomes void” interchangeably.</p>
+        </div>
+
+        <div class="outcome-grid">
+          <section class="outcome-lane" style="--lesson-delay: 0ms">
+            <span class="outcome-origin">Agreement</span>
+            <span class="outcome-arrow" aria-hidden="true">→</span>
+            <strong>Contract · s 2(h)</strong>
+            <p>Enforceable by law.</p>
+          </section>
+          <section class="outcome-lane" style="--lesson-delay: 120ms">
+            <span class="outcome-origin">Agreement</span>
+            <span class="outcome-arrow" aria-hidden="true">↛</span>
+            <strong>Void agreement · s 2(g)</strong>
+            <p>Not enforceable by law.</p>
+          </section>
+          <section class="outcome-lane" style="--lesson-delay: 240ms">
+            <span class="outcome-origin">Agreement</span>
+            <span class="outcome-arrow" aria-hidden="true">⇢</span>
+            <strong>Voidable contract · s 2(i)</strong>
+            <p>Enforceable at one party’s option, but not the other’s.</p>
+          </section>
+          <section class="outcome-lane" style="--lesson-delay: 360ms">
+            <span class="outcome-origin">Valid contract first</span>
+            <span class="outcome-arrow" aria-hidden="true">→ ×</span>
+            <strong>Becomes void · s 2(j)</strong>
+            <p>Later ceases to be enforceable.</p>
+          </section>
+        </div>
+
+        <p class="lesson-key"><strong>Diagnostic habit:</strong> ask what formed, where the legal problem appeared, who can rely on it and when enforceability was lost.</p>
+      </section>
+
+      <section class="lesson-scene" data-lesson-scene="4" aria-labelledby="lesson-scene-five" hidden>
+        <div class="lesson-heading">
+          <span class="section-kicker">LESSON CHECKPOINT</span>
+          <h2 id="lesson-scene-five">Power up the Contract Path</h2>
+          <p>Answer two questions to unlock the playable cases. A wrong answer gives a clue and may be retried.</p>
+        </div>
+
+        <section class="lesson-checkpoint" aria-live="polite">
+          <span id="quest-lesson-question-count" class="stage-counter"></span>
+          <h3 id="quest-lesson-question"></h3>
+          <p id="quest-lesson-coach" class="secondary-copy"></p>
+          <div id="quest-lesson-options" class="option-stack"></div>
+          <div class="viz-controls">
+            <button type="button" class="btn btn-primary" id="quest-check-lesson">Check my answer</button>
+            <button type="button" class="btn btn-primary" id="quest-next-check" hidden>Next checkpoint</button>
+            <button type="button" class="btn btn-primary" id="quest-enter-practice" hidden>Enter the case lab</button>
+          </div>
+          <p id="quest-lesson-feedback" class="feedback-line" role="status"></p>
+        </section>
+      </section>
+
+      <div class="lesson-controls viz-controls">
+        <button type="button" class="btn btn-ghost" id="quest-lesson-back">Previous concept</button>
+        <button type="button" class="btn" id="quest-lesson-replay">Replay animation</button>
+        <button type="button" class="btn btn-primary" id="quest-lesson-next">Next concept</button>
+      </div>
+    </section>
+
+    <section id="quest-game" hidden>
+      <div class="case-progress">
+        <div id="quest-progress-dots" class="progress-dots" aria-label="Case progress"></div>
+        <span id="quest-progress-label" class="secondary-copy"></span>
+      </div>
+
+      <section class="story-area" aria-labelledby="quest-case-title">
+        <div class="case-heading">
+          <div>
+            <span id="quest-case-code" class="section-kicker"></span>
+            <h2 id="quest-case-title"></h2>
+          </div>
+          <span id="quest-case-goal" class="viz-badge"></span>
+        </div>
+        <p id="quest-case-instruction" class="secondary-copy"></p>
+        <div id="quest-chat" class="story-chat" role="log" aria-label="Case conversation"></div>
+        <div id="quest-facts" class="viz-row fact-row" aria-label="Important facts"></div>
+      </section>
+
+      <section class="path-area" aria-labelledby="contract-path-heading">
+        <div class="path-heading">
+          <div>
+            <h3 id="contract-path-heading">The Contract Path</h3>
+            <p class="secondary-copy">A highlighted step has been legally established. A crossed step is where the transaction stops or changes.</p>
+          </div>
+          <span id="quest-current-stage" class="viz-badge">Start with the words</span>
+        </div>
+
+        <ol id="contract-path" class="contract-path" aria-label="Words, proposal, acceptance, promise, consideration, agreement, section 10, contract">
+          <li class="path-node" data-node="words"><span>1</span><strong>Words or conduct</strong></li>
+          <li class="path-node" data-node="proposal"><span>2</span><strong>Proposal</strong></li>
+          <li class="path-node" data-node="acceptance"><span>3</span><strong>Acceptance</strong></li>
+          <li class="path-node" data-node="promise"><span>4</span><strong>Promise</strong></li>
+          <li class="path-node" data-node="consideration"><span>5</span><strong>Consideration</strong></li>
+          <li class="path-node" data-node="agreement"><span>6</span><strong>Agreement</strong></li>
+          <li class="path-node" data-node="section10"><span>7</span><strong>Section 10</strong></li>
+          <li class="path-node" data-node="contract"><span>8</span><strong>Contract</strong></li>
+        </ol>
+      </section>
+
+      <section id="quest-question-stage" class="question-area" aria-live="polite">
+        <div class="question-heading">
+          <span id="quest-question-count" class="stage-counter"></span>
+          <div>
+            <h3 id="quest-question"></h3>
+            <p id="quest-coach" class="secondary-copy"></p>
+          </div>
+        </div>
+
+        <div id="quest-options" class="option-stack"></div>
+
+        <div class="viz-controls">
+          <button type="button" class="btn btn-primary" id="quest-check">Check my answer</button>
+          <button type="button" class="btn btn-ghost" id="quest-show-hint">Give me a hint</button>
+          <button type="button" class="btn btn-primary" id="quest-continue" hidden>Continue</button>
+        </div>
+
+        <p id="quest-feedback" class="feedback-line" role="status"></p>
+        <p id="quest-hint-text" class="hint-line" hidden></p>
+      </section>
+
+      <section id="quest-result-stage" class="result-area" hidden>
+        <div id="quest-result-stamp" class="result-stamp"></div>
+        <h3 id="quest-result-title"></h3>
+        <p id="quest-result-explanation"></p>
+        <p id="quest-result-anchor" class="secondary-copy"></p>
+        <button type="button" class="btn btn-primary" id="quest-next-case">Try the next case</button>
+      </section>
+
+      <details class="quick-glossary">
+        <summary>Need the legal vocabulary? Open the quick glossary</summary>
+        <dl>
+          <div><dt>Proposal</dt><dd>Willingness to do or abstain from doing something, expressed with a view to obtaining the other person’s assent.</dd></div>
+          <div><dt>Acceptance</dt><dd>The person receiving the proposal signifies assent to it.</dd></div>
+          <div><dt>Promise</dt><dd>A proposal becomes a promise when it is accepted.</dd></div>
+          <div><dt>Consideration</dt><dd>The act, abstinence or promise given at the promisor’s desire in exchange for the promise.</dd></div>
+          <div><dt>Agreement</dt><dd>The legally relevant arrangement produced by promises and their exchange.</dd></div>
+          <div><dt>Contract</dt><dd>An agreement enforceable by law.</dd></div>
+          <div><dt>Void agreement</dt><dd>An agreement that is not enforceable by law.</dd></div>
+          <div><dt>Voidable contract</dt><dd>A contract enforceable at the option of one party but not the other.</dd></div>
+        </dl>
+      </details>
+    </section>
+
+    <section id="quest-boss" class="boss-area" hidden>
+      <div class="boss-heading">
+        <div>
+          <span class="viz-badge">FINAL CHALLENGE</span>
+          <h2>The Pixel Café Timeline</h2>
+        </div>
+        <p>One transaction changes as new messages and facts appear. Classify it at each moment.</p>
+      </div>
+
+      <ol id="quest-boss-history" class="boss-history" aria-label="Completed moments"></ol>
+
+      <section class="boss-question" aria-live="polite">
+        <span id="quest-boss-count" class="stage-counter"></span>
+        <h3 id="quest-boss-title"></h3>
+        <p id="quest-boss-story"></p>
+        <div id="quest-boss-options" class="option-stack"></div>
+        <div class="viz-controls">
+          <button type="button" class="btn btn-primary" id="quest-check-boss">Check my answer</button>
+          <button type="button" class="btn btn-primary" id="quest-next-moment" hidden>See the next moment</button>
+        </div>
+        <p id="quest-boss-feedback" class="feedback-line" role="status"></p>
+      </section>
+    </section>
+
+    <section id="quest-complete" class="complete-area" hidden>
+      <span class="completion-banner">CONTRACT PATH COMPLETE</span>
+      <h2>You are now a Contract Architect</h2>
+      <p>You followed promises from ordinary words to legal enforceability and identified where minority, coercion, illegality and later events alter the result.</p>
+
+      <ol class="takeaway-path">
+        <li><strong>Proposal:</strong> Did someone seek the other person’s assent?</li>
+        <li><strong>Acceptance:</strong> Was the proposal accepted as made?</li>
+        <li><strong>Promise and agreement:</strong> What did each side undertake or exchange?</li>
+        <li><strong>Section 10:</strong> Are consent, competency, consideration and object legally sufficient?</li>
+        <li><strong>Final status:</strong> Contract, void agreement, voidable contract or contract later becoming void?</li>
+      </ol>
+
+      <div class="viz-controls">
+        <button type="button" class="btn btn-primary" id="quest-restart">Restart module</button>
+        <a class="btn" href="https://www.indiacode.nic.in/handle/123456789/2187" target="_blank" rel="noopener noreferrer">Read the Indian Contract Act</a>
+      </div>
+    </section>
+
+    <footer class="quest-footer">
+      <span>Indian Contract Act, 1872 · ss 2(a)–(j), 10</span>
+      <span>© Anshuman Sahoo 2026</span>
+    </footer>
+  </section>
+</div>
+
+<style>
+  #contract-quest-student {
+    --font-size-base: 15px;
+    position: relative;
+    width: 100%;
+    color: var(--foreground);
+    font-family: "Courier New", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  #contract-quest-student * {
+    box-sizing: border-box;
+  }
+
+  #contract-quest-student :is(h1, h2, h3, strong, dt) {
+    font-weight: 500;
+  }
+
+  #contract-quest-student .quest-shell {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #contract-quest-student .scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.025;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 3px,
+      var(--foreground) 4px
+    );
+  }
+
+  #contract-quest-student .quest-bar,
+  #contract-quest-student .case-progress,
+  #contract-quest-student .case-heading,
+  #contract-quest-student .path-heading,
+  #contract-quest-student .question-heading,
+  #contract-quest-student .boss-heading,
+  #contract-quest-student .quest-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  #contract-quest-student .quest-bar {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #contract-quest-student .quest-brand,
+  #contract-quest-student .section-kicker,
+  #contract-quest-student .stage-counter,
+  #contract-quest-student .completion-banner {
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  #contract-quest-student .quest-status {
+    justify-content: flex-end;
+  }
+
+  #contract-quest-student .secondary-copy {
+    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  }
+
+  #contract-quest-student .quest-intro,
+  #contract-quest-student .complete-area {
+    display: grid;
+    gap: 1.25rem;
+    padding-block: 1.5rem;
+  }
+
+  #contract-quest-student .intro-copy {
+    max-width: 56rem;
+  }
+
+  #contract-quest-student .intro-copy h2,
+  #contract-quest-student .intro-copy p {
+    margin-bottom: 0.6rem;
+  }
+
+  #contract-quest-student .intro-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  #contract-quest-student .intro-steps li {
+    display: grid;
+    gap: 0.35rem;
+    padding-left: 0.8rem;
+    border-left: 3px solid var(--viz-series-1);
+  }
+
+  #contract-quest-student .guide-row {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.75rem;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .guide-row p {
+    margin: 0;
+  }
+
+  #contract-quest-student .pixel-guide {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    place-items: center;
+    aspect-ratio: 1;
+    border: 2px solid var(--border);
+    background: color-mix(in srgb, var(--viz-series-1) 18%, transparent);
+    animation: guide-bob 900ms steps(2, end) infinite alternate;
+  }
+
+  #contract-quest-student .guide-eyes {
+    letter-spacing: 0.3em;
+  }
+
+  #contract-quest-student .lesson-area {
+    display: grid;
+    gap: 1rem;
+    padding-block: 1rem 1.5rem;
+  }
+
+  #contract-quest-student .lesson-progress-row,
+  #contract-quest-student .lesson-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  #contract-quest-student .lesson-heading {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  #contract-quest-student .lesson-heading :is(h2, p) {
+    margin: 0;
+  }
+
+  #contract-quest-student .lesson-scene {
+    display: grid;
+    gap: 1rem;
+    padding-block: 0.5rem;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .lesson-heading {
+    animation: lesson-scene-enter 280ms ease-out both;
+  }
+
+  #contract-quest-student .promise-worlds {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .promise-world {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  #contract-quest-student .promise-world + .promise-world {
+    border-left: 1px solid var(--border);
+  }
+
+  #contract-quest-student .world-label,
+  #contract-quest-student .charge-label,
+  #contract-quest-student .gate-title {
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  #contract-quest-student .pixel-pair {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    gap: 2.5rem;
+    min-height: 4.3rem;
+  }
+
+  #contract-quest-student .pixel-person {
+    position: relative;
+    display: block;
+    inline-size: 2.4rem;
+    block-size: 3.7rem;
+    color: var(--viz-series-1);
+  }
+
+  #contract-quest-student .pixel-person.is-two {
+    color: var(--viz-series-2);
+  }
+
+  #contract-quest-student .pixel-person::before,
+  #contract-quest-student .pixel-person::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: currentColor;
+  }
+
+  #contract-quest-student .pixel-person::before {
+    top: 0;
+    inline-size: 1.45rem;
+    block-size: 1.45rem;
+    box-shadow:
+      -0.35rem 0.35rem 0 color-mix(in srgb, currentColor 65%, transparent),
+      0.35rem 0.35rem 0 color-mix(in srgb, currentColor 65%, transparent);
+  }
+
+  #contract-quest-student .pixel-person::after {
+    bottom: 0;
+    inline-size: 2rem;
+    block-size: 2rem;
+    clip-path: polygon(20% 0, 80% 0, 100% 72%, 72% 72%, 72% 100%, 52% 100%, 50% 72%, 48% 100%, 28% 100%, 28% 72%, 0 72%);
+  }
+
+  #contract-quest-student .lesson-scene.is-active .pixel-person:first-child {
+    animation: pixel-enter-left 420ms steps(4, end) both;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .pixel-person:last-child {
+    animation: pixel-enter-right 420ms steps(4, end) both;
+  }
+
+  #contract-quest-student .lesson-speech {
+    position: relative;
+    min-height: 4.2rem;
+    padding: 0.8rem;
+    margin: 0;
+    border-left: 3px solid var(--viz-series-1);
+    background: color-mix(in srgb, var(--muted) 58%, transparent);
+  }
+
+  #contract-quest-student .lesson-scene.is-active .lesson-speech {
+    animation: speech-pop 360ms 360ms ease-out both;
+  }
+
+  #contract-quest-student .world-result {
+    justify-self: start;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--viz-series-1);
+  }
+
+  #contract-quest-student .lesson-key {
+    margin: 0;
+    padding: 0.8rem 0 0.8rem 0.9rem;
+    border-left: 3px solid var(--primary);
+  }
+
+  #contract-quest-student .lesson-chain {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 1rem 0;
+    margin: 0;
+    list-style: none;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .lesson-chain li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--muted) 48%, transparent);
+  }
+
+  #contract-quest-student .lesson-chain li:not(:last-child)::after {
+    content: "›";
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    right: -0.45rem;
+    transform: translateY(-50%);
+    color: var(--foreground);
+  }
+
+  #contract-quest-student .lesson-chain span,
+  #contract-quest-student .lesson-chain small {
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+
+  #contract-quest-student .lesson-chain small {
+    font-size: inherit;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .lesson-chain li {
+    animation: lesson-node-rise 360ms var(--lesson-delay) ease-out both;
+  }
+
+  #contract-quest-student .consideration-charge {
+    display: grid;
+    grid-template-columns: auto minmax(7rem, 0.45fr) minmax(12rem, 1fr);
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  #contract-quest-student .consideration-charge p {
+    margin: 0;
+  }
+
+  #contract-quest-student .charge-track {
+    display: block;
+    height: 0.8rem;
+    border: 1px solid var(--border);
+  }
+
+  #contract-quest-student .charge-track span {
+    display: block;
+    height: 100%;
+    transform-origin: left;
+    background: var(--viz-series-1);
+  }
+
+  #contract-quest-student .lesson-scene.is-active .charge-track span {
+    animation: charge-fill 800ms 360ms steps(6, end) both;
+  }
+
+  #contract-quest-student .gate-machine {
+    display: grid;
+    grid-template-columns: minmax(7rem, 1fr) minmax(10rem, 1.5fr) minmax(7rem, 1fr);
+    align-items: center;
+    gap: 1rem;
+    min-height: 10rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .gate-token {
+    display: grid;
+    place-items: center;
+    min-height: 4.5rem;
+    padding: 0.8rem;
+    border: 2px solid var(--border);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  #contract-quest-student .agreement-token {
+    background: color-mix(in srgb, var(--viz-series-2) 14%, transparent);
+  }
+
+  #contract-quest-student .contract-token {
+    border-color: var(--green);
+    background: color-mix(in srgb, var(--green) 13%, transparent);
+  }
+
+  #contract-quest-student .section-gate {
+    display: grid;
+    gap: 0.6rem;
+    text-align: center;
+  }
+
+  #contract-quest-student .gate-doors {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 7rem;
+    overflow: hidden;
+    border: 2px solid var(--primary);
+  }
+
+  #contract-quest-student .gate-door {
+    display: block;
+    background:
+      linear-gradient(90deg, transparent 47%, var(--border) 48%, var(--border) 52%, transparent 53%),
+      color-mix(in srgb, var(--primary) 20%, var(--muted));
+  }
+
+  #contract-quest-student .gate-door.is-left {
+    border-right: 1px solid var(--primary);
+  }
+
+  #contract-quest-student .lesson-scene.is-active .agreement-token {
+    animation: agreement-arrive 500ms steps(5, end) both;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .gate-door.is-left {
+    animation: gate-open-left 650ms 520ms steps(5, end) both;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .gate-door.is-right {
+    animation: gate-open-right 650ms 520ms steps(5, end) both;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .contract-token {
+    animation: contract-emerge 520ms 920ms steps(5, end) both;
+  }
+
+  #contract-quest-student .gate-checks {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.55rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  #contract-quest-student .gate-checks li {
+    position: relative;
+    min-width: 0;
+    padding: 0.7rem 0.6rem 0.7rem 1.7rem;
+    border-bottom: 2px solid var(--green);
+  }
+
+  #contract-quest-student .gate-checks li::before {
+    content: "✓";
+    position: absolute;
+    left: 0.5rem;
+    color: var(--green);
+  }
+
+  #contract-quest-student .lesson-scene.is-active .gate-checks li {
+    animation: lesson-node-rise 360ms calc(820ms + var(--lesson-delay)) ease-out both;
+  }
+
+  #contract-quest-student .outcome-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 1.2rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .outcome-lane {
+    display: grid;
+    grid-template-columns: minmax(6rem, auto) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #contract-quest-student .outcome-lane p {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  }
+
+  #contract-quest-student .outcome-origin {
+    padding: 0.35rem 0.45rem;
+    background: color-mix(in srgb, var(--muted) 65%, transparent);
+  }
+
+  #contract-quest-student .outcome-arrow {
+    color: var(--primary);
+    font-weight: 500;
+  }
+
+  #contract-quest-student .lesson-scene.is-active .outcome-lane {
+    animation: outcome-arrive 420ms var(--lesson-delay) steps(5, end) both;
+  }
+
+  #contract-quest-student .lesson-checkpoint {
+    display: grid;
+    gap: 0.8rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .lesson-checkpoint :is(h3, p) {
+    margin: 0;
+  }
+
+  #contract-quest-student .lesson-controls {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  #contract-quest-student #quest-lesson-next {
+    margin-left: auto;
+  }
+
+  #contract-quest-student .case-progress {
+    padding-block: 0.8rem;
+  }
+
+  #contract-quest-student .progress-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  #contract-quest-student .progress-dot {
+    inline-size: 0.85rem;
+    block-size: 0.85rem;
+    border: 1px solid var(--border);
+    background: transparent;
+  }
+
+  #contract-quest-student .progress-dot.is-current {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+
+  #contract-quest-student .progress-dot.is-done {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  #contract-quest-student .story-area {
+    padding-block: 0.5rem 1rem;
+  }
+
+  #contract-quest-student .case-heading {
+    align-items: flex-end;
+  }
+
+  #contract-quest-student .case-heading h2,
+  #contract-quest-student .case-heading p,
+  #contract-quest-student .path-heading h3,
+  #contract-quest-student .path-heading p,
+  #contract-quest-student .question-heading h3,
+  #contract-quest-student .question-heading p {
+    margin: 0;
+  }
+
+  #contract-quest-student .story-chat {
+    display: grid;
+    gap: 0.7rem;
+    margin-block: 0.9rem;
+    padding-block: 0.9rem;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .chat-line {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.8rem;
+    animation: chat-enter 250ms ease-out both;
+  }
+
+  #contract-quest-student .chat-avatar {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--viz-series-2) 15%, transparent);
+  }
+
+  #contract-quest-student .chat-line p {
+    margin: 0;
+  }
+
+  #contract-quest-student .chat-speaker {
+    display: block;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+    font-weight: 500;
+  }
+
+  #contract-quest-student .fact-row {
+    justify-content: flex-start;
+  }
+
+  #contract-quest-student .path-area {
+    padding-block: 1rem;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .path-heading {
+    align-items: flex-start;
+    margin-bottom: 0.9rem;
+  }
+
+  #contract-quest-student .contract-path {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.4rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  #contract-quest-student .path-node {
+    position: relative;
+    display: grid;
+    align-content: center;
+    gap: 0.3rem;
+    min-width: 0;
+    padding: 0.55rem;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--muted) 55%, transparent);
+    color: color-mix(in srgb, var(--foreground) 66%, transparent);
+  }
+
+  #contract-quest-student .path-node:not(:last-child)::after {
+    content: "›";
+    position: absolute;
+    right: -0.38rem;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  #contract-quest-student .path-node span {
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  }
+
+  #contract-quest-student .path-node.is-passed {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--green) 16%, transparent);
+    border-color: var(--green);
+    animation: path-unlock 300ms ease-out both;
+  }
+
+  #contract-quest-student .path-node.is-passed::before {
+    content: "✓";
+    position: absolute;
+    top: 0.2rem;
+    right: 0.3rem;
+    color: var(--green);
+  }
+
+  #contract-quest-student .path-node.is-failed {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--destructive) 12%, transparent);
+    border-color: var(--destructive);
+    animation: path-shake 260ms steps(2, end);
+  }
+
+  #contract-quest-student .path-node.is-failed::before {
+    content: "×";
+    position: absolute;
+    top: 0.2rem;
+    right: 0.3rem;
+    color: var(--destructive);
+  }
+
+  #contract-quest-student .path-node.is-current {
+    color: var(--foreground);
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    animation: current-pulse 700ms steps(2, end) infinite alternate;
+  }
+
+  #contract-quest-student .path-node.is-changed {
+    color: var(--foreground);
+    border-color: var(--viz-series-2);
+    background: color-mix(in srgb, var(--viz-series-2) 18%, transparent);
+    animation: path-shake 260ms steps(2, end);
+  }
+
+  #contract-quest-student .question-area,
+  #contract-quest-student .result-area {
+    padding-block: 1.25rem;
+  }
+
+  #contract-quest-student .question-heading {
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  #contract-quest-student .stage-counter {
+    display: grid;
+    place-items: center;
+    min-inline-size: 3rem;
+    min-block-size: 3rem;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--viz-series-1) 15%, transparent);
+  }
+
+  #contract-quest-student .option-stack {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  #contract-quest-student .option-stack .btn {
+    width: 100%;
+    min-height: 2.6rem;
+    height: auto;
+    min-width: 0;
+    justify-content: flex-start;
+    overflow: visible;
+    padding-block: 0.6rem;
+    text-align: left;
+    text-overflow: clip;
+    white-space: normal;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  #contract-quest-student .feedback-line,
+  #contract-quest-student .hint-line {
+    min-height: 1.5em;
+    margin-bottom: 0;
+  }
+
+  #contract-quest-student .feedback-line.is-correct {
+    color: var(--green);
+  }
+
+  #contract-quest-student .feedback-line.is-retry {
+    color: var(--destructive);
+  }
+
+  #contract-quest-student .hint-line {
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--viz-series-2);
+  }
+
+  #contract-quest-student .result-stamp {
+    display: inline-block;
+    padding: 0.55rem 0.75rem;
+    border: 3px double currentColor;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    transform: rotate(-1deg);
+    animation: stamp-in 330ms cubic-bezier(0.2, 1.7, 0.5, 1) both;
+  }
+
+  #contract-quest-student .result-stamp.is-contract {
+    color: var(--green);
+  }
+
+  #contract-quest-student .result-stamp.is-void {
+    color: var(--destructive);
+  }
+
+  #contract-quest-student .result-stamp.is-voidable {
+    color: var(--viz-series-2);
+  }
+
+  #contract-quest-student .quick-glossary {
+    padding-block: 0.9rem;
+    border-top: 1px solid var(--border);
+  }
+
+  #contract-quest-student .quick-glossary summary {
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  #contract-quest-student .quick-glossary dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 1.25rem;
+  }
+
+  #contract-quest-student .quick-glossary dt,
+  #contract-quest-student .quick-glossary dd {
+    margin: 0;
+  }
+
+  #contract-quest-student .quick-glossary dd {
+    color: color-mix(in srgb, var(--foreground) 75%, transparent);
+  }
+
+  #contract-quest-student .boss-area,
+  #contract-quest-student .complete-area {
+    padding-block: 1.5rem;
+  }
+
+  #contract-quest-student .boss-heading {
+    align-items: flex-end;
+  }
+
+  #contract-quest-student .boss-heading h2,
+  #contract-quest-student .boss-heading p {
+    margin: 0;
+  }
+
+  #contract-quest-student .boss-history {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    min-height: 2.5rem;
+    padding: 0.8rem 0;
+    margin: 1rem 0;
+    list-style: none;
+    border-block: 1px solid var(--border);
+  }
+
+  #contract-quest-student .boss-history li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  #contract-quest-student .boss-history li:not(:last-child)::after {
+    content: "→";
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
+  }
+
+  #contract-quest-student .boss-history span {
+    padding: 0.3rem 0.45rem;
+    border-bottom: 2px solid var(--viz-series-1);
+    background: color-mix(in srgb, var(--viz-series-1) 14%, transparent);
+  }
+
+  #contract-quest-student .boss-question {
+    padding-top: 0.5rem;
+  }
+
+  #contract-quest-student .completion-banner {
+    display: inline-block;
+    justify-self: start;
+    padding: 0.55rem 0.75rem;
+    border: 3px double var(--green);
+    color: var(--green);
+    animation: stamp-in 330ms cubic-bezier(0.2, 1.7, 0.5, 1) both;
+  }
+
+  #contract-quest-student .takeaway-path {
+    display: grid;
+    gap: 0.65rem;
+    padding-left: 1.4rem;
+  }
+
+  #contract-quest-student .quest-footer {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+
+  #contract-quest-student [hidden] {
+    display: none !important;
+  }
+
+  @keyframes lesson-scene-enter {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pixel-enter-left {
+    from { opacity: 0; transform: translateX(-2.5rem); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pixel-enter-right {
+    from { opacity: 0; transform: translateX(2.5rem); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes speech-pop {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes lesson-node-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes charge-fill {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes agreement-arrive {
+    from { opacity: 0; transform: translateX(-2rem); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes contract-emerge {
+    from { opacity: 0; transform: translateX(-2rem); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes gate-open-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-86%); }
+  }
+
+  @keyframes gate-open-right {
+    from { transform: translateX(0); }
+    to { transform: translateX(86%); }
+  }
+
+  @keyframes outcome-arrive {
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes guide-bob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
+  }
+
+  @keyframes chat-enter {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes path-unlock {
+    from { transform: scale(0.94); }
+    to { transform: scale(1); }
+  }
+
+  @keyframes path-shake {
+    0% { transform: translateX(0); }
+    40% { transform: translateX(4px); }
+    80% { transform: translateX(-3px); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes current-pulse {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+  }
+
+  @keyframes stamp-in {
+    from { opacity: 0; transform: scale(1.6) rotate(-4deg); }
+    to { opacity: 1; transform: scale(1) rotate(-1deg); }
+  }
+
+  @media (max-width: 850px) {
+    #contract-quest-student .lesson-chain {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .lesson-chain li:not(:last-child)::after {
+      content: "⌄";
+      top: auto;
+      right: 0.5rem;
+      bottom: -0.65rem;
+      transform: none;
+    }
+
+    #contract-quest-student .gate-checks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #contract-quest-student .consideration-charge {
+      grid-template-columns: auto minmax(7rem, 1fr);
+    }
+
+    #contract-quest-student .consideration-charge p {
+      grid-column: 1 / -1;
+    }
+
+    #contract-quest-student .contract-path {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #contract-quest-student .path-node:nth-child(4)::after {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    #contract-quest-student .quest-status {
+      justify-content: flex-start;
+    }
+
+    #contract-quest-student .promise-worlds,
+    #contract-quest-student .outcome-grid {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .promise-world + .promise-world {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    #contract-quest-student .gate-machine {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .gate-doors {
+      min-height: 5rem;
+    }
+
+    #contract-quest-student .gate-checks {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .consideration-charge {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .consideration-charge p {
+      grid-column: auto;
+    }
+
+    #contract-quest-student .outcome-lane {
+      grid-template-columns: minmax(6rem, auto) auto minmax(0, 1fr);
+    }
+
+    #contract-quest-student #quest-lesson-next {
+      margin-left: 0;
+    }
+
+    #contract-quest-student .intro-steps,
+    #contract-quest-student .quick-glossary dl {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .contract-path {
+      grid-template-columns: 1fr;
+    }
+
+    #contract-quest-student .path-node:not(:last-child)::after {
+      content: "⌄";
+      right: 0.5rem;
+      top: auto;
+      bottom: -0.55rem;
+      transform: none;
+    }
+
+    #contract-quest-student .path-node:nth-child(4)::after {
+      display: block;
+    }
+
+    #contract-quest-student .guide-row {
+      grid-template-columns: 3rem minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #contract-quest-student *,
+    #contract-quest-student *::before,
+    #contract-quest-student *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    "use strict";
+
+    const root = document.getElementById("contract-quest-student");
+    if (!root) return;
+
+    const $ = (selector) => root.querySelector(selector);
+    const $$ = (selector) => Array.from(root.querySelectorAll(selector));
+
+    const cases = [
+      {
+        code: "CASE 1 · HOSTEL",
+        title: "The 7:00 A.M. Promise",
+        goal: "Is there a legal proposal?",
+        instruction: "Arjun uses the word “promise”. Your task is to decide whether that ordinary word has the statutory meaning used in section 2(b).",
+        chat: [
+          { speaker: "Meera", text: "My examination begins at eight tomorrow." },
+          { speaker: "Arjun", text: "Do not worry. I promise I will wake you at seven." },
+          { speaker: "Guide", text: "There is no payment, bargain or request for a legal commitment." }
+        ],
+        facts: ["Friends and roommates", "Social setting", "No exchange"],
+        questions: [
+          {
+            prompt: "Is Arjun’s statement a proposal under section 2(a)?",
+            coach: "Ask whether Arjun is seeking Meera’s assent to a bargain—or merely reassuring her.",
+            options: [
+              "Yes, because he used the word “promise”.",
+              "No. It is a social assurance, not a request for assent to a legal bargain.",
+              "Yes, because the statement matters to Meera."
+            ],
+            correct: 1,
+            explanation: "Correct. Ordinary language and statutory language are different. Arjun has not sought Meera’s assent to a bargain.",
+            retry: "Not quite. The word “promise” is not decisive. Focus on whether the statement seeks assent to a legal bargain.",
+            hint: "Section 2(a) begins with willingness expressed with a view to obtaining the other person’s assent.",
+            focus: "proposal",
+            update: { fail: ["proposal"] }
+          },
+          {
+            prompt: "How should this transaction be classified?",
+            coach: "Because the statutory chain never began, choose the earliest accurate description.",
+            options: [
+              "No legally operative proposal",
+              "Promise under section 2(b)",
+              "Contract under section 2(h)"
+            ],
+            correct: 0,
+            explanation: "Exactly. A sincere social assurance can remain outside contract law.",
+            retry: "The chain cannot reach promise or contract unless there is first a legal proposal and acceptance.",
+            hint: "Look at the crossed Proposal step on the Contract Path.",
+            focus: "proposal"
+          }
+        ],
+        status: "No legally operative proposal",
+        result: "The word “promise” was used only in its ordinary social sense. Without a proposal seeking legal assent, there is no statutory promise, agreement or contract.",
+        anchor: "Legal anchor: ICA ss 2(a)–(b); intention to create legal relations is principally case-law based."
+      },
+      {
+        code: "CASE 2 · MARKET",
+        title: "The Chetak Deal",
+        goal: "Build a valid contract",
+        instruction: "Follow a commercial conversation from definite proposal to enforceable contract.",
+        chat: [
+          { speaker: "Zara", text: "Are you selling the blue Chetak?" },
+          { speaker: "Kabir", text: "I will sell you my blue 2001 Chetak, MH-31-A-2001, for ₹28,000. Reply before 6 p.m." },
+          { speaker: "Zara", text: "I accept your offer for that Chetak at ₹28,000." }
+        ],
+        facts: ["Both are adults", "Free consent", "Lawful sale", "No special form required"],
+        questions: [
+          {
+            prompt: "Which statement is the legal proposal?",
+            coach: "Look for definite subject matter, price and an invitation to assent.",
+            options: [
+              "“Are you selling the blue Chetak?”",
+              "“I will sell the identified Chetak for ₹28,000. Reply before 6 p.m.”",
+              "“I accept your offer.”"
+            ],
+            correct: 1,
+            explanation: "Correct. Kabir expresses definite willingness to sell with a view to obtaining Zara’s assent.",
+            retry: "Look for the statement that contains definite terms and asks the other person to assent.",
+            hint: "The proposal identifies the scooter, fixes the price and provides an acceptance deadline.",
+            focus: "proposal",
+            update: { pass: ["proposal"] }
+          },
+          {
+            prompt: "What does Zara’s reply do?",
+            coach: "Compare her reply with Kabir’s exact terms.",
+            options: [
+              "It is only a request for information.",
+              "It changes the price and becomes a counter-proposal.",
+              "It accepts the proposal as made and turns it into a promise."
+            ],
+            correct: 2,
+            explanation: "Yes. Acceptance converts the proposal into a promise under section 2(b).",
+            retry: "Zara does not add or change any term. What happens when the proposal is accepted as made?",
+            hint: "Section 2(b): when the person to whom the proposal is made signifies assent, the proposal becomes a promise.",
+            focus: "acceptance",
+            update: { pass: ["acceptance", "promise"] }
+          },
+          {
+            prompt: "What supplies the consideration and forms the agreement?",
+            coach: "Identify what each party promises to give the other.",
+            options: [
+              "Kabir’s friendship with Zara",
+              "The Chetak in exchange for ₹28,000",
+              "The fact that the conversation occurred before 6 p.m."
+            ],
+            correct: 1,
+            explanation: "Correct. The reciprocal sale and payment obligations provide consideration and form the agreement.",
+            retry: "Consideration is the legally relevant exchange—not the relationship or the time of the conversation.",
+            hint: "Ask: what does Kabir promise, and what does Zara promise in return?",
+            focus: "consideration",
+            update: { pass: ["consideration", "agreement"] }
+          },
+          {
+            prompt: "Do the section 10 requirements appear satisfied?",
+            coach: "Check competency, free consent, lawful consideration, lawful object and whether the agreement is expressly void.",
+            options: [
+              "Yes. The stated facts disclose no section 10 defect.",
+              "No. Every vehicle sale must be registered before any contract can exist.",
+              "No. Oral or electronic acceptance can never create a contract."
+            ],
+            correct: 0,
+            explanation: "Correct. On these facts, the agreement passes the section 10 enforceability gate.",
+            retry: "Do not add a formality that the facts and governing law do not require.",
+            hint: "The parties are competent, consent is free, and both consideration and object are lawful.",
+            focus: "section10",
+            update: { pass: ["section10"] }
+          },
+          {
+            prompt: "What is the final legal status?",
+            coach: "The agreement has passed the enforceability gate.",
+            options: ["Proposal only", "Agreement but not contract", "Contract"],
+            correct: 2,
+            explanation: "Correct. An agreement enforceable by law is a contract under section 2(h).",
+            retry: "The section 10 gate has already been satisfied. What does section 2(h) call an enforceable agreement?",
+            hint: "Agreement + enforceability = contract.",
+            focus: "contract",
+            update: { pass: ["contract"] }
+          }
+        ],
+        status: "Contract",
+        result: "Kabir’s definite proposal was accepted without qualification. Reciprocal promises supplied consideration, formed an agreement and passed the section 10 requirements.",
+        anchor: "Legal anchor: ICA ss 2(a)–(e), 2(h), 10."
+      },
+      {
+        code: "CASE 3 · COMPUTER SHOP",
+        title: "Teen Tech",
+        goal: "Test contractual competency",
+        instruction: "The bargain appears commercially complete, but one fact affects enforceability.",
+        chat: [
+          { speaker: "Dealer", text: "I will sell this refurbished computer to you for ₹25,000 on thirty-day credit." },
+          { speaker: "Riya", text: "I accept. I will pay within thirty days." },
+          { speaker: "System", text: "Identity record: Riya is seventeen years old." }
+        ],
+        facts: ["Buyer aged 17", "Price fixed", "Credit sale", "Mutual assent"],
+        questions: [
+          {
+            prompt: "Have proposal, acceptance and a statutory promise occurred?",
+            coach: "First separate formation from enforceability.",
+            options: [
+              "Yes. The dealer proposed definite terms and Riya accepted them.",
+              "No. A person under eighteen cannot hear or accept an offer.",
+              "No. Credit sales never involve promises."
+            ],
+            correct: 0,
+            explanation: "Correct. The communications can still be analysed as proposal and acceptance before competency is tested.",
+            retry: "Do not jump immediately to the final legal status. Identify what the communications themselves contain.",
+            hint: "The dealer states definite terms and Riya signifies assent.",
+            focus: "proposal",
+            update: { pass: ["proposal", "acceptance", "promise"] }
+          },
+          {
+            prompt: "Is there consideration and an apparent agreement?",
+            coach: "Identify the promised exchange before applying section 10.",
+            options: [
+              "Yes. The computer is exchanged for the promise to pay ₹25,000.",
+              "No. Consideration must always be paid immediately.",
+              "No. Goods can never constitute consideration."
+            ],
+            correct: 0,
+            explanation: "Correct. The computer and payment obligations provide the apparent exchange.",
+            retry: "Consideration can be executory; it need not already have been performed.",
+            hint: "Each side has promised something of legal value to the other.",
+            focus: "consideration",
+            update: { pass: ["consideration", "agreement"] }
+          },
+          {
+            prompt: "Does the arrangement pass the section 10 competency requirement?",
+            coach: "Now use Riya’s age.",
+            options: [
+              "Yes, because the price is reasonable.",
+              "No. Riya is not competent to contract under section 11.",
+              "Yes, because she clearly understood the transaction."
+            ],
+            correct: 1,
+            explanation: "Correct. Competency is an independent section 10 requirement.",
+            retry: "Understanding and price do not replace the statutory requirement of competency.",
+            hint: "Riya is seventeen. Read section 10 together with section 11.",
+            focus: "section10",
+            update: { fail: ["section10"] }
+          },
+          {
+            prompt: "What is the final legal status under the Indian minority rule?",
+            coach: "Choose between voidness and voidability.",
+            options: ["Contract", "Voidable contract", "Void agreement"],
+            correct: 2,
+            explanation: "Correct. Indian case law treats a minor’s agreement as void.",
+            retry: "A minor’s agreement is not merely enforceable at the minor’s option.",
+            hint: "The established Indian rule is voidness, not ordinary voidability.",
+            focus: "section10"
+          }
+        ],
+        status: "Void agreement",
+        result: "The communications and exchange resemble a bargain, but contractual competency fails. Indian case law therefore prevents the arrangement from becoming an enforceable contract.",
+        anchor: "Legal anchor: ICA ss 10–11; the minority rule is developed through Indian case law."
+      },
+      {
+        code: "CASE 4 · TENANCY",
+        title: "The Detained Scooter",
+        goal: "Test whether consent was free",
+        instruction: "An agreement was signed, but the surrounding conduct changes who may avoid it.",
+        chat: [
+          { speaker: "Landlord", text: "I will sell you this office desk for ₹20,000. Sign the sale agreement, or I will keep your scooter locked in my garage." },
+          { speaker: "Tenant", text: "I do not want the desk, but return my scooter. I will sign." },
+          { speaker: "System", text: "The tenant signed while the property remained detained." }
+        ],
+        facts: ["Adults", "Desk exchanged for ₹20,000", "Property detained", "Pressure caused consent"],
+        questions: [
+          {
+            prompt: "Is there an apparent bargain before consent is tested?",
+            coach: "Formation and validity are separate questions.",
+            options: [
+              "Yes. The desk and ₹20,000 are an apparent exchange, and the tenant assented.",
+              "No. A signed document can never be an agreement.",
+              "No. Pressure means no words were communicated."
+            ],
+            correct: 0,
+            explanation: "Correct. The legal chain reaches an apparent agreement before free consent is examined.",
+            retry: "Identify the communications and obligations first; test the quality of consent afterwards.",
+            hint: "The tenant signed and accepted an additional payment obligation.",
+            focus: "proposal",
+            update: { pass: ["proposal", "acceptance", "promise", "consideration", "agreement"] }
+          },
+          {
+            prompt: "Was the tenant’s consent free?",
+            coach: "Section 15 includes unlawful detention or threatened detention of property.",
+            options: [
+              "Yes, because the tenant physically signed.",
+              "No. The detention of the scooter was used to cause consent.",
+              "Yes, because only threats against a person can affect consent."
+            ],
+            correct: 1,
+            explanation: "Correct. A signature does not prove that consent was free.",
+            retry: "Look at why the tenant agreed, not merely whether a signature exists.",
+            hint: "The scooter remained detained while the tenant was made to sign.",
+            focus: "section10",
+            update: { changed: ["section10", "contract"] }
+          },
+          {
+            prompt: "What is the final legal status?",
+            coach: "The affected party receives an option to affirm or avoid the transaction.",
+            options: ["Void agreement", "Voidable contract", "Automatically valid contract"],
+            correct: 1,
+            explanation: "Correct. Consent caused by coercion makes the contract voidable at the option of the coerced party.",
+            retry: "The consequence is an option held by the affected party, not automatic voidness.",
+            hint: "“Enforceable at the option of one party” is the definition of a voidable contract.",
+            focus: "section10"
+          }
+        ],
+        status: "Voidable contract",
+        result: "The defect concerns the freedom of consent. The coerced party may affirm or avoid the transaction, producing voidability rather than automatic voidness.",
+        anchor: "Legal anchor: ICA ss 14, 15 and 19."
+      },
+      {
+        code: "CASE 5 · CAMPUS",
+        title: "The Question-Paper Market",
+        goal: "Test the object of the bargain",
+        instruction: "Both parties agree, but mutual consent cannot make an unlawful bargain enforceable.",
+        chat: [
+          { speaker: "Seller", text: "I will give you the stolen university question paper for ₹10,000." },
+          { speaker: "Buyer", text: "Agreed. I will transfer ₹10,000 tonight." },
+          { speaker: "System", text: "Both parties understood the prohibited purpose." }
+        ],
+        facts: ["Price fixed", "Mutual assent", "Stolen paper", "Prohibited purpose"],
+        questions: [
+          {
+            prompt: "How far does the formation chain initially travel?",
+            coach: "Identify proposal, acceptance and exchange before asking whether the law will enforce them.",
+            options: [
+              "It reaches an apparent agreement supported by consideration.",
+              "It stops before proposal because the seller stated a price.",
+              "It becomes a valid contract immediately upon mutual assent."
+            ],
+            correct: 0,
+            explanation: "Correct. Formation elements can exist even where enforceability ultimately fails.",
+            retry: "Mutual assent does not itself answer whether the object is lawful.",
+            hint: "The seller proposes an exchange and the buyer accepts it.",
+            focus: "proposal",
+            update: { pass: ["proposal", "acceptance", "promise", "consideration", "agreement"] }
+          },
+          {
+            prompt: "Does the agreement pass the lawful-object requirement?",
+            coach: "Focus on what the parties are trying to accomplish.",
+            options: [
+              "Yes, because ₹10,000 is lawful money.",
+              "No. The bargain is directed toward obtaining a stolen examination paper.",
+              "Yes, because both parties knew the facts."
+            ],
+            correct: 1,
+            explanation: "Correct. Lawfulness concerns the object and purpose, not merely the form of payment.",
+            retry: "Free and informed agreement cannot legalise a prohibited object.",
+            hint: "Section 10 requires both lawful consideration and a lawful object.",
+            focus: "section10",
+            update: { fail: ["section10"] }
+          },
+          {
+            prompt: "What is the final legal status?",
+            coach: "The unlawful object prevents the agreement from becoming a contract.",
+            options: ["Void agreement", "Voidable contract", "Valid contract"],
+            correct: 0,
+            explanation: "Correct. The law refuses enforcement from the beginning.",
+            retry: "The problem is not an option belonging to one innocent party; the object itself is unlawful.",
+            hint: "An agreement with an unlawful object does not become a contract.",
+            focus: "section10"
+          }
+        ],
+        status: "Void agreement",
+        result: "Proposal, acceptance and consideration cannot overcome an unlawful object. The section 10 gate fails and the agreement remains void.",
+        anchor: "Legal anchor: ICA ss 10 and 23."
+      },
+      {
+        code: "CASE 6 · EVENT VENUE",
+        title: "The Prohibited Performance",
+        goal: "Distinguish void from later becoming void",
+        instruction: "This transaction is initially valid. The decisive event occurs only after contract formation.",
+        chat: [
+          { speaker: "Venue", text: "We will provide the hall on 15 August for ₹80,000." },
+          { speaker: "Organiser", text: "Accepted. The advance has been transferred." },
+          { speaker: "System", text: "After formation, a lawful government order prohibits the event and makes performance unlawful." }
+        ],
+        facts: ["Initially lawful", "Valid formation", "Advance paid", "Later prohibition"],
+        questions: [
+          {
+            prompt: "Before the government order, what legal status had been reached?",
+            coach: "Use only the facts existing at the moment of formation.",
+            options: [
+              "No proposal",
+              "A valid contract",
+              "A void agreement"
+            ],
+            correct: 1,
+            explanation: "Correct. The agreement was lawful and enforceable when formed.",
+            retry: "Do not use the later event to rewrite the transaction’s earlier status.",
+            hint: "At formation, the parties were competent, consent was free and the bargain was lawful.",
+            focus: "contract",
+            update: { pass: ["proposal", "acceptance", "promise", "consideration", "agreement", "section10", "contract"] }
+          },
+          {
+            prompt: "When did the enforceability problem arise?",
+            coach: "Timing distinguishes a void agreement from a contract that later becomes void.",
+            options: [
+              "It existed from the beginning.",
+              "It arose only after a valid contract had already formed.",
+              "No enforceability problem ever arose."
+            ],
+            correct: 1,
+            explanation: "Correct. The supervening prohibition changes the status of an existing contract.",
+            retry: "The facts expressly say that the government order came after formation.",
+            hint: "Compare the words “is not enforceable” in section 2(g) with “ceases to be enforceable” in section 2(j).",
+            focus: "contract",
+            update: { changed: ["contract"] }
+          },
+          {
+            prompt: "What is the final legal status?",
+            coach: "Choose the classification that preserves the contract’s valid earlier history.",
+            options: ["Void agreement from the outset", "Voidable contract", "Contract that subsequently becomes void"],
+            correct: 2,
+            explanation: "Correct. The contract was valid first and later ceased to be enforceable.",
+            retry: "A void agreement never becomes a contract. Here, enforceability was lost only later.",
+            hint: "Section 2(j) concerns a contract that ceases to be enforceable.",
+            focus: "contract"
+          }
+        ],
+        status: "Contract subsequently becomes void",
+        result: "The transaction passed every formation and enforceability requirement at the outset. A later legal prohibition caused an existing contract to cease to be enforceable.",
+        anchor: "Legal anchor: ICA ss 2(j) and 56."
+      }
+    ];
+
+    const bossEvents = [
+      {
+        title: "Casual enquiry",
+        story: "The coaching centre says: “We may buy some computers next month.”",
+        options: ["No operative proposal", "Proposal only", "Contract"],
+        correct: 0,
+        status: "No operative proposal",
+        explanation: "The words are preliminary and do not seek assent to definite terms."
+      },
+      {
+        title: "Definite commercial terms",
+        story: "It sends: “We will buy five identified computers for ₹1,50,000. Accept by Friday.”",
+        options: ["Proposal only", "Promise", "Agreement"],
+        correct: 0,
+        status: "Proposal only",
+        explanation: "A definite proposal exists, but the café has not yet accepted it."
+      },
+      {
+        title: "Conditional reply",
+        story: "The café replies: “Accepted, provided you also include five printers.”",
+        options: ["Acceptance", "Proposal only—the reply is a counter-proposal", "Agreement"],
+        correct: 1,
+        status: "Counter-proposal",
+        explanation: "The qualified reply does not accept the original proposal. It makes a new proposal."
+      },
+      {
+        title: "Counter-proposal accepted",
+        story: "The coaching centre replies: “Agreed: five computers and five printers for ₹1,50,000.”",
+        options: ["Proposal only", "Agreement", "Voidable contract"],
+        correct: 1,
+        status: "Agreement",
+        explanation: "Acceptance and reciprocal promises now create an agreement; enforceability must still be checked."
+      },
+      {
+        title: "Section 10 verified",
+        story: "Capacity, free consent, lawful consideration, lawful object and the remaining section 10 conditions are verified.",
+        options: ["Agreement but not contract", "Contract", "Void agreement"],
+        correct: 1,
+        status: "Contract",
+        explanation: "The agreement is enforceable by law and is therefore a contract."
+      },
+      {
+        title: "Later prohibition",
+        story: "A subsequent legal order prohibits transfer of the specified equipment before delivery.",
+        options: ["Void agreement from the outset", "Contract becomes void", "Voidable contract"],
+        correct: 1,
+        status: "Contract becomes void",
+        explanation: "The initially valid contract later ceases to be enforceable."
+      }
+    ];
+
+    const lessonQuestions = [
+      {
+        prompt: "What turns a proposal into a promise under section 2(b)?",
+        coach: "Choose the event that changes the proposal’s statutory status.",
+        options: [
+          "The proposer repeats it twice.",
+          "The person receiving it signifies assent.",
+          "The parties write the word “promise”."
+        ],
+        correct: 1,
+        explanation: "Correct. Acceptance is the bridge: an accepted proposal becomes a promise.",
+        retry: "Look for the recipient’s assent. The label used by the parties does not control the statutory classification."
+      },
+      {
+        prompt: "What makes an agreement a contract under sections 2(h) and 10?",
+        coach: "Formation of an agreement and legal enforceability are separate stages.",
+        options: [
+          "Every agreement is automatically a contract.",
+          "Only a written agreement can ever be a contract.",
+          "It must be enforceable by law and satisfy the applicable legal requirements."
+        ],
+        correct: 2,
+        explanation: "Lesson clear. A contract is an agreement enforceable by law; section 10 supplies the central enforceability requirements.",
+        retry: "Return to the Section 10 gate: the decisive idea is legal enforceability, not merely agreement or writing."
+      }
+    ];
+
+    const state = {
+      lessonIndex: 0,
+      lessonQuizIndex: 0,
+      lessonSelected: null,
+      lessonLocked: false,
+      lessonComplete: false,
+      caseIndex: 0,
+      questionIndex: 0,
+      selected: null,
+      passed: new Set(),
+      failed: new Set(),
+      changed: new Set(),
+      hints: 0,
+      solved: 0,
+      answerLocked: false,
+      bossIndex: 0,
+      bossSelected: null,
+      bossLocked: false,
+      sound: false
+    };
+
+    const els = {
+      intro: $("#quest-intro"),
+      lesson: $("#quest-lesson"),
+      game: $("#quest-game"),
+      boss: $("#quest-boss"),
+      complete: $("#quest-complete"),
+      caseBadge: $("#quest-case-badge"),
+      lessonStatus: $("#quest-lesson-status"),
+      caseStatus: $("#quest-case-status"),
+      hintStatus: $("#quest-hint-status"),
+      lessonProgress: $("#quest-lesson-progress"),
+      lessonDots: $("#quest-lesson-dots"),
+      lessonCount: $("#quest-lesson-count"),
+      lessonScenes: $$(".lesson-scene"),
+      lessonBack: $("#quest-lesson-back"),
+      lessonReplay: $("#quest-lesson-replay"),
+      lessonNext: $("#quest-lesson-next"),
+      lessonQuestionCount: $("#quest-lesson-question-count"),
+      lessonQuestion: $("#quest-lesson-question"),
+      lessonCoach: $("#quest-lesson-coach"),
+      lessonOptions: $("#quest-lesson-options"),
+      checkLesson: $("#quest-check-lesson"),
+      nextCheck: $("#quest-next-check"),
+      enterPractice: $("#quest-enter-practice"),
+      lessonFeedback: $("#quest-lesson-feedback"),
+      solved: $("#quest-solved"),
+      hints: $("#quest-hints"),
+      progressDots: $("#quest-progress-dots"),
+      progressLabel: $("#quest-progress-label"),
+      caseCode: $("#quest-case-code"),
+      caseTitle: $("#quest-case-title"),
+      caseGoal: $("#quest-case-goal"),
+      caseInstruction: $("#quest-case-instruction"),
+      chat: $("#quest-chat"),
+      facts: $("#quest-facts"),
+      currentStage: $("#quest-current-stage"),
+      questionStage: $("#quest-question-stage"),
+      resultStage: $("#quest-result-stage"),
+      questionCount: $("#quest-question-count"),
+      question: $("#quest-question"),
+      coach: $("#quest-coach"),
+      options: $("#quest-options"),
+      check: $("#quest-check"),
+      showHint: $("#quest-show-hint"),
+      continueButton: $("#quest-continue"),
+      feedback: $("#quest-feedback"),
+      hintText: $("#quest-hint-text"),
+      resultStamp: $("#quest-result-stamp"),
+      resultTitle: $("#quest-result-title"),
+      resultExplanation: $("#quest-result-explanation"),
+      resultAnchor: $("#quest-result-anchor"),
+      nextCase: $("#quest-next-case"),
+      bossHistory: $("#quest-boss-history"),
+      bossCount: $("#quest-boss-count"),
+      bossTitle: $("#quest-boss-title"),
+      bossStory: $("#quest-boss-story"),
+      bossOptions: $("#quest-boss-options"),
+      checkBoss: $("#quest-check-boss"),
+      nextMoment: $("#quest-next-moment"),
+      bossFeedback: $("#quest-boss-feedback")
+    };
+
+    let audioContext = null;
+
+    function beep(frequency, duration, type) {
+      if (!state.sound) return;
+      try {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = type || "square";
+        oscillator.frequency.value = frequency;
+        gain.gain.setValueAtTime(0.04, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+      } catch (error) {
+        state.sound = false;
+        $("#quest-sound").checked = false;
+      }
+    }
+
+    function setFeedback(text, kind) {
+      els.feedback.textContent = text;
+      els.feedback.classList.remove("is-correct", "is-retry");
+      if (kind) els.feedback.classList.add(kind);
+    }
+
+    function setLessonFeedback(text, kind) {
+      els.lessonFeedback.textContent = text;
+      els.lessonFeedback.classList.remove("is-correct", "is-retry");
+      if (kind) els.lessonFeedback.classList.add(kind);
+    }
+
+    function showLessonHeader() {
+      els.lessonStatus.hidden = false;
+      els.caseStatus.hidden = true;
+      els.hintStatus.hidden = true;
+    }
+
+    function showPracticeHeader() {
+      els.lessonStatus.hidden = true;
+      els.caseStatus.hidden = false;
+      els.hintStatus.hidden = false;
+    }
+
+    function renderLessonProgress() {
+      els.lessonDots.innerHTML = "";
+      els.lessonScenes.forEach((scene, index) => {
+        const dot = document.createElement("span");
+        dot.className = "progress-dot";
+        if (index < state.lessonIndex || state.lessonComplete) dot.classList.add("is-done");
+        if (index === state.lessonIndex && !state.lessonComplete) dot.classList.add("is-current");
+        dot.setAttribute(
+          "aria-label",
+          `Lesson part ${index + 1}${index < state.lessonIndex || state.lessonComplete ? " complete" : index === state.lessonIndex ? " current" : ""}`
+        );
+        els.lessonDots.appendChild(dot);
+      });
+      els.lessonProgress.textContent = `${state.lessonComplete ? 5 : state.lessonIndex + 1}/5`;
+      els.lessonCount.textContent = state.lessonIndex === 4
+        ? "Part 5 of 5 · Checkpoint"
+        : `Part ${state.lessonIndex + 1} of 5`;
+    }
+
+    function replayLessonScene() {
+      const activeScene = els.lessonScenes[state.lessonIndex];
+      if (!activeScene) return;
+      activeScene.classList.remove("is-active");
+      void activeScene.offsetWidth;
+      activeScene.classList.add("is-active");
+      beep(360, 0.05, "square");
+    }
+
+    function renderLessonQuestion() {
+      const question = lessonQuestions[state.lessonQuizIndex];
+      state.lessonSelected = null;
+      state.lessonLocked = false;
+      els.lessonQuestionCount.textContent = `${state.lessonQuizIndex + 1}/${lessonQuestions.length}`;
+      els.lessonQuestion.textContent = question.prompt;
+      els.lessonCoach.textContent = question.coach;
+      els.lessonOptions.innerHTML = "";
+      els.checkLesson.hidden = false;
+      els.nextCheck.hidden = true;
+      els.enterPractice.hidden = true;
+      setLessonFeedback("", "");
+
+      question.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-block";
+        button.textContent = option;
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          if (state.lessonLocked) return;
+          state.lessonSelected = index;
+          $$("#quest-lesson-options button").forEach((candidate) => candidate.setAttribute("aria-pressed", "false"));
+          button.setAttribute("aria-pressed", "true");
+          setLessonFeedback("", "");
+          beep(390, 0.04, "square");
+        });
+        els.lessonOptions.appendChild(button);
+      });
+
+      if (state.lessonComplete && state.lessonQuizIndex === lessonQuestions.length - 1) {
+        state.lessonLocked = true;
+        state.lessonSelected = question.correct;
+        const correctButton = els.lessonOptions.querySelectorAll("button")[question.correct];
+        if (correctButton) correctButton.setAttribute("aria-pressed", "true");
+        $$("#quest-lesson-options button").forEach((button) => {
+          button.disabled = true;
+        });
+        els.checkLesson.hidden = true;
+        els.enterPractice.hidden = false;
+        setLessonFeedback(question.explanation, "is-correct");
+        els.enterPractice.focus();
+        return;
+      }
+
+      const firstOption = els.lessonOptions.querySelector("button");
+      if (firstOption) firstOption.focus();
+    }
+
+    function renderLesson() {
+      els.lessonScenes.forEach((scene, index) => {
+        scene.hidden = index !== state.lessonIndex;
+        scene.classList.remove("is-active");
+      });
+
+      const activeScene = els.lessonScenes[state.lessonIndex];
+      if (activeScene) {
+        void activeScene.offsetWidth;
+        activeScene.classList.add("is-active");
+      }
+
+      renderLessonProgress();
+      els.lessonBack.hidden = state.lessonIndex === 0;
+      els.lessonReplay.hidden = state.lessonIndex === 4;
+      els.lessonNext.hidden = state.lessonIndex === 4;
+      els.caseBadge.textContent = state.lessonComplete ? "LESSON CLEAR" : `LESSON ${state.lessonIndex + 1}`;
+
+      if (state.lessonIndex === 4) {
+        renderLessonQuestion();
+      } else {
+        els.lessonNext.textContent = state.lessonIndex === 3 ? "Go to checkpoint" : "Next concept";
+        els.lessonNext.focus();
+      }
+    }
+
+    function startLesson() {
+      state.lessonIndex = 0;
+      state.lessonQuizIndex = 0;
+      state.lessonSelected = null;
+      state.lessonLocked = false;
+      state.lessonComplete = false;
+      els.intro.hidden = true;
+      els.lesson.hidden = false;
+      els.game.hidden = true;
+      showLessonHeader();
+      renderLesson();
+      beep(430, 0.07, "square");
+    }
+
+    function previousLesson() {
+      if (state.lessonIndex === 0) return;
+      state.lessonIndex -= 1;
+      renderLesson();
+      beep(300, 0.05, "triangle");
+    }
+
+    function nextLesson() {
+      if (state.lessonIndex >= els.lessonScenes.length - 1) return;
+      state.lessonIndex += 1;
+      renderLesson();
+      beep(510, 0.06, "square");
+    }
+
+    function checkLessonAnswer() {
+      const question = lessonQuestions[state.lessonQuizIndex];
+      if (state.lessonSelected === null) {
+        setLessonFeedback("Choose one answer first.", "is-retry");
+        return;
+      }
+      if (state.lessonSelected !== question.correct) {
+        setLessonFeedback(question.retry, "is-retry");
+        beep(150, 0.11, "triangle");
+        return;
+      }
+
+      state.lessonLocked = true;
+      setLessonFeedback(question.explanation, "is-correct");
+      els.checkLesson.hidden = true;
+      $$("#quest-lesson-options button").forEach((button) => {
+        button.disabled = true;
+      });
+
+      if (state.lessonQuizIndex < lessonQuestions.length - 1) {
+        els.nextCheck.hidden = false;
+        els.nextCheck.focus();
+      } else {
+        state.lessonComplete = true;
+        renderLessonProgress();
+        els.caseBadge.textContent = "LESSON CLEAR";
+        els.enterPractice.hidden = false;
+        els.enterPractice.focus();
+      }
+      beep(650, 0.07, "square");
+    }
+
+    function nextLessonCheck() {
+      if (state.lessonQuizIndex >= lessonQuestions.length - 1) return;
+      state.lessonQuizIndex += 1;
+      renderLessonQuestion();
+    }
+
+    function enterPractice() {
+      els.lesson.hidden = true;
+      els.game.hidden = false;
+      showPracticeHeader();
+      loadCase(0);
+      beep(520, 0.06, "square");
+      window.setTimeout(() => beep(710, 0.08, "square"), 70);
+    }
+
+    function updateHeader() {
+      els.solved.textContent = `${state.solved}/6`;
+      els.hints.textContent = String(state.hints);
+    }
+
+    function renderProgress() {
+      els.progressDots.innerHTML = "";
+      cases.forEach((caseItem, index) => {
+        const dot = document.createElement("span");
+        dot.className = "progress-dot";
+        if (index < state.caseIndex) dot.classList.add("is-done");
+        if (index === state.caseIndex) dot.classList.add("is-current");
+        dot.setAttribute("aria-label", `Case ${index + 1}${index < state.caseIndex ? " complete" : index === state.caseIndex ? " current" : ""}`);
+        els.progressDots.appendChild(dot);
+      });
+      const bossDot = document.createElement("span");
+      bossDot.className = "progress-dot";
+      bossDot.setAttribute("aria-label", "Final challenge");
+      els.progressDots.appendChild(bossDot);
+      els.progressLabel.textContent = `Case ${state.caseIndex + 1} of ${cases.length}`;
+    }
+
+    function renderChat(caseItem) {
+      els.chat.innerHTML = "";
+      caseItem.chat.forEach((line, index) => {
+        const row = document.createElement("div");
+        row.className = "chat-line";
+        row.style.animationDelay = `${index * 80}ms`;
+
+        const avatar = document.createElement("span");
+        avatar.className = "chat-avatar";
+        avatar.setAttribute("aria-hidden", "true");
+        avatar.textContent = line.speaker.slice(0, 1).toUpperCase();
+
+        const copy = document.createElement("p");
+        const speaker = document.createElement("span");
+        speaker.className = "chat-speaker";
+        speaker.textContent = line.speaker;
+        copy.appendChild(speaker);
+        copy.appendChild(document.createTextNode(line.text));
+
+        row.appendChild(avatar);
+        row.appendChild(copy);
+        els.chat.appendChild(row);
+      });
+    }
+
+    function renderFacts(caseItem) {
+      els.facts.innerHTML = "";
+      caseItem.facts.forEach((fact) => {
+        const badge = document.createElement("span");
+        badge.className = "viz-badge";
+        badge.textContent = fact;
+        els.facts.appendChild(badge);
+      });
+    }
+
+    function renderPath() {
+      const caseItem = cases[state.caseIndex];
+      const question = caseItem.questions[state.questionIndex];
+      $$(".path-node").forEach((node) => {
+        const key = node.dataset.node;
+        node.classList.toggle("is-passed", state.passed.has(key));
+        node.classList.toggle("is-failed", state.failed.has(key));
+        node.classList.toggle("is-changed", state.changed.has(key));
+        node.classList.toggle(
+          "is-current",
+          !state.answerLocked &&
+            question &&
+            question.focus === key &&
+            !state.passed.has(key) &&
+            !state.failed.has(key) &&
+            !state.changed.has(key)
+        );
+      });
+
+      if (state.changed.has("contract")) {
+        els.currentStage.textContent = caseItem.status === "Voidable contract"
+          ? "Contract is voidable"
+          : "Contract formed, then changed";
+      } else if (state.failed.size > 0) {
+        const failedNode = Array.from(state.failed).slice(-1)[0];
+        els.currentStage.textContent = `Problem at: ${labelForNode(failedNode)}`;
+      } else if (state.passed.size > 1) {
+        const passedNode = Array.from(state.passed).slice(-1)[0];
+        els.currentStage.textContent = `Reached: ${labelForNode(passedNode)}`;
+      } else {
+        els.currentStage.textContent = "Start with the words";
+      }
+    }
+
+    function labelForNode(node) {
+      const labels = {
+        words: "Words or conduct",
+        proposal: "Proposal",
+        acceptance: "Acceptance",
+        promise: "Promise",
+        consideration: "Consideration",
+        agreement: "Agreement",
+        section10: "Section 10",
+        contract: "Contract"
+      };
+      return labels[node] || node;
+    }
+
+    function renderOptions(question) {
+      state.selected = null;
+      state.answerLocked = false;
+      els.options.innerHTML = "";
+      question.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-block";
+        button.textContent = option;
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          if (state.answerLocked) return;
+          state.selected = index;
+          $$("#quest-options button").forEach((candidate) => candidate.setAttribute("aria-pressed", "false"));
+          button.setAttribute("aria-pressed", "true");
+          setFeedback("", "");
+          beep(390, 0.04, "square");
+        });
+        els.options.appendChild(button);
+      });
+    }
+
+    function loadCase(index) {
+      const caseItem = cases[index];
+      state.caseIndex = index;
+      state.questionIndex = 0;
+      state.selected = null;
+      state.passed = new Set(["words"]);
+      state.failed = new Set();
+      state.changed = new Set();
+      state.answerLocked = false;
+
+      els.caseBadge.textContent = `CASE ${index + 1}`;
+      els.caseCode.textContent = caseItem.code;
+      els.caseTitle.textContent = caseItem.title;
+      els.caseGoal.textContent = caseItem.goal;
+      els.caseInstruction.textContent = caseItem.instruction;
+      renderProgress();
+      renderChat(caseItem);
+      renderFacts(caseItem);
+      els.questionStage.hidden = false;
+      els.resultStage.hidden = true;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const caseItem = cases[state.caseIndex];
+      const question = caseItem.questions[state.questionIndex];
+      els.questionCount.textContent = `${state.questionIndex + 1}/${caseItem.questions.length}`;
+      els.question.textContent = question.prompt;
+      els.coach.textContent = question.coach;
+      renderOptions(question);
+      setFeedback("", "");
+      els.hintText.textContent = "";
+      els.hintText.hidden = true;
+      els.check.hidden = false;
+      els.showHint.hidden = false;
+      els.continueButton.hidden = true;
+      els.continueButton.textContent = state.questionIndex === caseItem.questions.length - 1 ? "See the result" : "Continue";
+      renderPath();
+      const firstOption = els.options.querySelector("button");
+      if (firstOption) firstOption.focus();
+    }
+
+    function applyPathUpdate(update) {
+      if (!update) return;
+      (update.pass || []).forEach((node) => {
+        state.failed.delete(node);
+        state.changed.delete(node);
+        state.passed.add(node);
+      });
+      (update.fail || []).forEach((node) => {
+        state.passed.delete(node);
+        state.changed.delete(node);
+        state.failed.add(node);
+      });
+      (update.changed || []).forEach((node) => {
+        state.failed.delete(node);
+        state.changed.add(node);
+      });
+    }
+
+    function checkAnswer() {
+      const caseItem = cases[state.caseIndex];
+      const question = caseItem.questions[state.questionIndex];
+      if (state.selected === null) {
+        setFeedback("Choose one answer first.", "is-retry");
+        return;
+      }
+      if (state.selected !== question.correct) {
+        setFeedback(question.retry, "is-retry");
+        beep(150, 0.11, "triangle");
+        return;
+      }
+
+      state.answerLocked = true;
+      applyPathUpdate(question.update);
+      renderPath();
+      setFeedback(question.explanation, "is-correct");
+      els.check.hidden = true;
+      els.showHint.hidden = true;
+      els.continueButton.hidden = false;
+      $$("#quest-options button").forEach((button) => {
+        button.disabled = true;
+      });
+      els.continueButton.focus();
+      beep(620, 0.07, "square");
+      window.setTimeout(() => beep(790, 0.08, "square"), 70);
+    }
+
+    function showHint() {
+      const caseItem = cases[state.caseIndex];
+      const question = caseItem.questions[state.questionIndex];
+      if (!els.hintText.hidden) return;
+      state.hints += 1;
+      updateHeader();
+      els.hintText.textContent = `Hint: ${question.hint}`;
+      els.hintText.hidden = false;
+      beep(310, 0.05, "triangle");
+    }
+
+    function continueQuestion() {
+      const caseItem = cases[state.caseIndex];
+      if (state.questionIndex < caseItem.questions.length - 1) {
+        state.questionIndex += 1;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function statusClass(status) {
+      if (status === "Contract") return "is-contract";
+      if (status === "Voidable contract") return "is-voidable";
+      if (status.includes("Void") || status.includes("void")) return "is-void";
+      return "";
+    }
+
+    function showResult() {
+      const caseItem = cases[state.caseIndex];
+      const resultTitles = {
+        "Contract": "This promise completed the Contract Path.",
+        "Voidable contract": "A contract formed, but the affected party may avoid it.",
+        "Contract subsequently becomes void": "A contract formed, then later lost enforceability.",
+        "Void agreement": "An agreement formed, but it did not become an enforceable contract.",
+        "No legally operative proposal": "The Contract Path never began."
+      };
+      els.questionStage.hidden = true;
+      els.resultStage.hidden = false;
+      els.resultStamp.className = `result-stamp ${statusClass(caseItem.status)}`;
+      els.resultStamp.textContent = caseItem.status.toUpperCase();
+      els.resultTitle.textContent = resultTitles[caseItem.status] || "Case classified.";
+      els.resultExplanation.textContent = caseItem.result;
+      els.resultAnchor.textContent = caseItem.anchor;
+      els.nextCase.textContent = state.caseIndex === cases.length - 1 ? "Start the final challenge" : "Try the next case";
+      state.solved = state.caseIndex + 1;
+      updateHeader();
+      els.nextCase.focus();
+      beep(caseItem.status === "Contract" ? 740 : 450, 0.12, "square");
+    }
+
+    function nextCase() {
+      if (state.caseIndex < cases.length - 1) {
+        loadCase(state.caseIndex + 1);
+      } else {
+        startBoss();
+      }
+    }
+
+    function startBoss() {
+      els.game.hidden = true;
+      els.boss.hidden = false;
+      els.caseBadge.textContent = "FINAL";
+      state.bossIndex = 0;
+      state.bossSelected = null;
+      state.bossLocked = false;
+      els.bossHistory.innerHTML = "";
+      renderBoss();
+    }
+
+    function renderBoss() {
+      const event = bossEvents[state.bossIndex];
+      state.bossSelected = null;
+      state.bossLocked = false;
+      els.bossCount.textContent = `Moment ${state.bossIndex + 1} of ${bossEvents.length}`;
+      els.bossTitle.textContent = event.title;
+      els.bossStory.textContent = event.story;
+      els.bossFeedback.textContent = "";
+      els.bossFeedback.className = "feedback-line";
+      els.bossOptions.innerHTML = "";
+      els.checkBoss.hidden = false;
+      els.nextMoment.hidden = true;
+      els.nextMoment.textContent = state.bossIndex === bossEvents.length - 1 ? "Finish the game" : "See the next moment";
+
+      event.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-block";
+        button.textContent = option;
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          if (state.bossLocked) return;
+          state.bossSelected = index;
+          $$("#quest-boss-options button").forEach((candidate) => candidate.setAttribute("aria-pressed", "false"));
+          button.setAttribute("aria-pressed", "true");
+          els.bossFeedback.textContent = "";
+          els.bossFeedback.className = "feedback-line";
+          beep(390, 0.04, "square");
+        });
+        els.bossOptions.appendChild(button);
+      });
+
+      const firstOption = els.bossOptions.querySelector("button");
+      if (firstOption) firstOption.focus();
+    }
+
+    function checkBoss() {
+      const event = bossEvents[state.bossIndex];
+      if (state.bossSelected === null) {
+        els.bossFeedback.textContent = "Choose one status first.";
+        els.bossFeedback.className = "feedback-line is-retry";
+        return;
+      }
+      if (state.bossSelected !== event.correct) {
+        els.bossFeedback.textContent = "Look only at what has happened by this moment. Try again.";
+        els.bossFeedback.className = "feedback-line is-retry";
+        beep(150, 0.11, "triangle");
+        return;
+      }
+
+      state.bossLocked = true;
+      els.bossFeedback.textContent = event.explanation;
+      els.bossFeedback.className = "feedback-line is-correct";
+      els.checkBoss.hidden = true;
+      els.nextMoment.hidden = false;
+      $$("#quest-boss-options button").forEach((button) => {
+        button.disabled = true;
+      });
+
+      const item = document.createElement("li");
+      const label = document.createElement("span");
+      label.textContent = event.status;
+      item.appendChild(label);
+      els.bossHistory.appendChild(item);
+      els.nextMoment.focus();
+      beep(650, 0.07, "square");
+    }
+
+    function nextMoment() {
+      if (state.bossIndex < bossEvents.length - 1) {
+        state.bossIndex += 1;
+        renderBoss();
+      } else {
+        finishGame();
+      }
+    }
+
+    function finishGame() {
+      els.boss.hidden = true;
+      els.complete.hidden = false;
+      els.caseBadge.textContent = "COMPLETE";
+      beep(520, 0.07, "square");
+      window.setTimeout(() => beep(670, 0.08, "square"), 80);
+      window.setTimeout(() => beep(860, 0.13, "square"), 160);
+      $("#quest-restart").focus();
+    }
+
+    function restart() {
+      state.lessonIndex = 0;
+      state.lessonQuizIndex = 0;
+      state.lessonSelected = null;
+      state.lessonLocked = false;
+      state.lessonComplete = false;
+      state.caseIndex = 0;
+      state.questionIndex = 0;
+      state.selected = null;
+      state.passed = new Set();
+      state.failed = new Set();
+      state.changed = new Set();
+      state.hints = 0;
+      state.solved = 0;
+      state.answerLocked = false;
+      state.bossIndex = 0;
+      state.bossSelected = null;
+      state.bossLocked = false;
+      updateHeader();
+      els.lessonProgress.textContent = "0/5";
+      els.caseBadge.textContent = "READY";
+      els.complete.hidden = true;
+      els.boss.hidden = true;
+      els.game.hidden = true;
+      els.lesson.hidden = true;
+      els.intro.hidden = false;
+      showLessonHeader();
+      $("#quest-start").focus();
+    }
+
+    $("#quest-start").addEventListener("click", startLesson);
+
+    $("#quest-sound").addEventListener("change", (event) => {
+      state.sound = event.target.checked;
+      if (state.sound) beep(440, 0.06, "square");
+    });
+
+    els.lessonBack.addEventListener("click", previousLesson);
+    els.lessonReplay.addEventListener("click", replayLessonScene);
+    els.lessonNext.addEventListener("click", nextLesson);
+    els.checkLesson.addEventListener("click", checkLessonAnswer);
+    els.nextCheck.addEventListener("click", nextLessonCheck);
+    els.enterPractice.addEventListener("click", enterPractice);
+    els.check.addEventListener("click", checkAnswer);
+    els.showHint.addEventListener("click", showHint);
+    els.continueButton.addEventListener("click", continueQuestion);
+    els.nextCase.addEventListener("click", nextCase);
+    els.checkBoss.addEventListener("click", checkBoss);
+    els.nextMoment.addEventListener("click", nextMoment);
+    $("#quest-restart").addEventListener("click", restart);
+  })();
+</script>
+
+<script id="codex-visualization-tooltip">/* oxlint-disable typescript/no-unsafe-argument, typescript/no-unsafe-call, typescript/no-unsafe-return */
+// Runs inside the visualization sandbox, not the host webview.
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =>
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest("[data-tooltip]")
+      : null;
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    document.removeEventListener("pointerover", handlePointerOpen);
+    document.removeEventListener("pointerout", handleLeave);
+    document.removeEventListener("focusin", handleFocusIn);
+    document.removeEventListener("focusout", handleLeave);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener("pointerover", handlePointerOpen);
+  document.addEventListener("pointerout", handleLeave);
+  document.addEventListener("focusin", handleFocusIn);
+  document.addEventListener("focusout", handleLeave);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("contextmenu", handleContextMenu);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-lucide-initialization">(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+</body>
+</html>
