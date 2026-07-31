@@ -1838,8 +1838,8 @@ svg {
 
     function moduleHref(module) {
       return module.id === 1
-        ? "module-01.html"
-        : `modules/module-${padded(module.id)}.html`;
+        ? "contractos-promise-machine.html"
+        : `module-${padded(module.id)}.html`;
     }
 
     function buildModuleLink(module, context) {
@@ -2251,7 +2251,7 @@ svg {
         row.classList.add("is-flashed");
         row.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-      noticeElement.textContent = `Module ${padded(moduleId)} is mapped to modules/module-${padded(moduleId)}.html; its game page will be connected when produced.`;
+      noticeElement.textContent = `Module ${padded(moduleId)} is mapped to module-${padded(moduleId)}.html; its game page will be connected when produced.`;
     }
 
     root.addEventListener("click", (event) => {
