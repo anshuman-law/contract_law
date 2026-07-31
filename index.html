@@ -827,7 +827,7 @@ svg {
     <div class="hero-copy">
       <span class="viz-badge">LAW MATTERS ONLINE ACADEMY</span>
       <h1>Gamified Introduction to Indian Contract Law</h1>
-      <p class="hero-lead">Learn the general principles of Indian contract law through decisions, consequences, changed facts and replay—not passive lectures followed by quizzes.</p>
+      <p class="hero-lead">Learn the general principles of Indian contract law through decisions, consequences, changed facts and replay - not passive lectures followed by quizzes.</p>
       <p class="course-byline">A course by <strong>Anshuman Sahoo</strong></p>
 
       <div class="viz-controls">
@@ -924,7 +924,7 @@ svg {
           <h2 id="course-index-heading">Ten worlds. Sixty-nine playable questions.</h2>
           <p>Open a world to inspect its sub-modules, statutory anchors and proposed game mechanics.</p>
         </div>
-        <span class="viz-badge">1 PLAYABLE · 68 PLANNED</span>
+        <span class="viz-badge">69 PLAYABLE</span>
       </div>
 
       <div id="world-index" class="world-index"></div>
@@ -1548,7 +1548,7 @@ svg {
       { id: 9, world: 2, title: "Did the reply accept the offer or destroy it?", anchor: "ICA ss 2(b), 7", game: "Negotiation Chat" },
       { id: 10, world: 2, title: "Can conduct amount to acceptance?", anchor: "ICA ss 8, 9", game: "Conduct Simulator" },
       { id: 11, world: 2, title: "At what precise moment is acceptance complete?", anchor: "ICA ss 3, 4", game: "Communication Timeline" },
-      { id: 12, world: 2, title: "Can an offeror prescribe the method of acceptance—or declare silence to be acceptance?", anchor: "ICA ss 7(2), 8, 9", game: "Instruction-Compliance Puzzle" },
+      { id: 12, world: 2, title: "Can an offeror prescribe the method of acceptance - or declare silence to be acceptance?", anchor: "ICA ss 7(2), 8, 9", game: "Instruction-Compliance Puzzle" },
       { id: 13, world: 2, title: "Who wins the revocation race?", anchor: "ICA ss 4–6", game: "Revocation Race" },
       { id: 14, world: 2, title: "Must a contract be written, signed or registered?", anchor: "ICA s 10; IT Act ss 4, 5, 10A", game: "Formality Checkpoint" },
       { id: 15, world: 2, title: "When does an offer die without express revocation?", anchor: "ICA s 6", game: "Offer Survival Meter" },
@@ -1565,7 +1565,7 @@ svg {
       { id: 26, world: 4, title: "Was the person of sound mind at the moment of contracting?", anchor: "ICA ss 11–12", game: "Capacity Clock" },
       { id: 27, world: 4, title: "Who pays for necessaries supplied to an incapable person?", anchor: "ICA s 68", game: "Necessaries Budget" },
       { id: 28, world: 5, title: "Did the parties agree upon the same thing in the same sense?", anchor: "ICA s 13", game: "Split-Screen Agreement" },
-      { id: 29, world: 5, title: "Was consent free—and did the defect cause the agreement?", anchor: "ICA ss 14, 19", game: "Consent Diagnostic" },
+      { id: 29, world: 5, title: "Was consent free - and did the defect cause the agreement?", anchor: "ICA ss 14, 19", game: "Consent Diagnostic" },
       { id: 30, world: 5, title: "Was the pressure legally coercive?", anchor: "ICA ss 15, 19, 72", game: "Property Hostage Negotiation" },
       { id: 31, world: 5, title: "When does influence become undue?", anchor: "ICA ss 16(1)–(2), 19A", game: "Trusted Adviser Role-Play" },
       { id: 32, world: 5, title: "Who must prove that the transaction was fair?", anchor: "ICA ss 16(3), 19A", game: "Evidence Balance" },
@@ -1848,12 +1848,7 @@ svg {
       link.textContent = context === "path"
         ? `M${padded(module.id)} · ${module.title}`
         : module.title;
-      if (module.id === 1) {
-        link.dataset.live = "true";
-      } else {
-        link.dataset.planned = "true";
-        link.dataset.moduleId = String(module.id);
-      }
+      link.dataset.live = "true";
       return link;
     }
 
@@ -1916,7 +1911,7 @@ svg {
 
           const game = document.createElement("span");
           game.className = "module-game";
-          game.textContent = `${module.game}${module.id === 1 ? " · PLAYABLE" : " · PAGE PLANNED"}`;
+          game.textContent = `${module.game} · PLAYABLE`;
 
           item.append(id, main, game);
           list.appendChild(item);
@@ -2240,7 +2235,7 @@ svg {
       }
 
       renderMilestones(result.selected);
-      els.routeNotice.textContent = "Module 01 opens the completed game. Other milestone links identify their planned page route and corresponding curriculum entry.";
+      els.routeNotice.textContent = "Every milestone opens its completed game page.";
       els.recommended.hidden = false;
       els.recommended.scrollIntoView({ behavior: "smooth", block: "start" });
     }
