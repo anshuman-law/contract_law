@@ -827,7 +827,7 @@ svg {
     <div class="hero-copy">
       <span class="viz-badge">LAW MATTERS ONLINE ACADEMY</span>
       <h1>Gamified Introduction to Indian Contract Law</h1>
-      <p class="hero-lead">Learn the general principles of Indian contract law through decisions, consequences, and replays.</p>
+      <p class="hero-lead">Learn the general principles of Indian contract law through decisions, consequences, changed facts and replay - not passive lectures followed by quizzes.</p>
       <p class="course-byline">A course by <strong>Anshuman Sahoo</strong></p>
 
       <div class="viz-controls">
@@ -854,7 +854,7 @@ svg {
       <div>
         <span class="section-kicker">HOW THE COURSE WORKS</span>
         <h2 id="course-introduction-heading">Every doctrine becomes a playable legal problem</h2>
-        <p>Each module assigns the learner a role, presents plausible choices, reveals the practical consequence before explaining the Indian law, and then changes one material fact so the learner must reason again.</p>
+        <p>Each module offers a short Core run and a deeper strategic Lab with limited resources, visible legal state, adaptive opposition and instructive failure.</p>
       </div>
 
       <ol class="pedagogy-loop" aria-label="Course learning loop">
@@ -868,7 +868,7 @@ svg {
         <li>Debrief</li>
       </ol>
 
-      <p class="scope-note"><strong>Scope:</strong> general principles of Indian contract law. Indemnity, guarantee, bailment, pledge and agency are not covered under this course.</p>
+      <p class="scope-note"><strong>Scope:</strong> general principles of Indian contract law. Indemnity, guarantee, bailment, pledge and agency are outside this course.</p>
     </section>
 
     <section id="course-pathfinder" class="card pathfinder" aria-labelledby="pathfinder-heading">
@@ -922,10 +922,14 @@ svg {
         <div>
           <span class="section-kicker">COMPLETE COURSE INDEX</span>
           <h2 id="course-index-heading">Ten worlds. Sixty-nine playable questions.</h2>
-          <p>Open a world to inspect its sub-modules, statutory anchors and game mechanics.</p>
+          <p>Open a world to inspect its sub-modules, statutory anchors and Core and Lab simulation mechanics.</p>
         </div>
-        <span class="viz-badge">69 PLAYABLE</span>
+        <span class="viz-badge">69 STRATEGIC GAMES</span>
       </div>
+
+      <div id="world-index" class="world-index"></div>
+      <p id="index-link-notice" class="link-notice" role="status">Every module includes a Core run and a deeper strategic Lab.</p>
+    </section>
 
     <section class="course-author" aria-labelledby="course-author-heading">
       <span class="section-kicker">COURSE DESIGNER</span>
@@ -1533,75 +1537,75 @@ svg {
     ];
 
     const modules = [
-      { id: 1, world: 1, title: "When does a promise become a contract?", anchor: "ICA ss 2(a)–(j), 10", game: "Promise Sorting Desk" },
-      { id: 2, world: 1, title: "Why should law enforce a private bargain?", anchor: "ICA ss 10, 23, 28; CPA s 2(46)", game: "Contract Constitution" },
-      { id: 3, world: 1, title: "Was this arrangement meant to be legally binding?", anchor: "ICA ss 2(e), 2(h), 10; case law", game: "Message Forensics" },
-      { id: 4, world: 1, title: "Is the transaction void, voidable, valid or subsequently void?", anchor: "ICA ss 2(g)–(j), 19, 19A, 56", game: "Contract Status Timeline" },
-      { id: 5, world: 1, title: "Can the Government be bound by an ordinary bargain?", anchor: "Constitution arts 298–299; ICA s 10", game: "Procurement Approval Maze" },
-      { id: 6, world: 2, title: "Is it an offer or merely an invitation?", anchor: "ICA ss 2(a), 2(b)", game: "Marketplace Classifier" },
-      { id: 7, world: 2, title: "Can a promise be made to the whole world?", anchor: "ICA ss 2(a), 8", game: "Reward Hunt" },
-      { id: 8, world: 2, title: "Can someone accept an offer without knowing about it?", anchor: "ICA ss 3, 4, 8", game: "Hidden Reward Story" },
-      { id: 9, world: 2, title: "Did the reply accept the offer or destroy it?", anchor: "ICA ss 2(b), 7", game: "Negotiation Chat" },
-      { id: 10, world: 2, title: "Can conduct amount to acceptance?", anchor: "ICA ss 8, 9", game: "Conduct Simulator" },
-      { id: 11, world: 2, title: "At what precise moment is acceptance complete?", anchor: "ICA ss 3, 4", game: "Communication Timeline" },
-      { id: 12, world: 2, title: "Can an offeror prescribe the method of acceptance - or declare silence to be acceptance?", anchor: "ICA ss 7(2), 8, 9", game: "Instruction-Compliance Puzzle" },
+      { id: 1, world: 1, title: "When does a promise become a contract?", anchor: "ICA ss 2(a)–(j), 10", game: "The Chain Foundry" },
+      { id: 2, world: 1, title: "Why should law enforce a private bargain?", anchor: "ICA ss 10, 23, 28; CPA s 2(46)", game: "The Enforcement Budget" },
+      { id: 3, world: 1, title: "Was this arrangement meant to be legally binding?", anchor: "ICA ss 2(e), 2(h), 10; case law", game: "The Paper Trail You Left" },
+      { id: 4, world: 1, title: "Is the transaction void, voidable, valid or subsequently void?", anchor: "ICA ss 2(g)–(j), 19, 19A, 56", game: "The Election Window" },
+      { id: 5, world: 1, title: "Can the Government be bound by an ordinary bargain?", anchor: "Constitution arts 298–299; ICA s 10", game: "The Signature That Wasn't" },
+      { id: 6, world: 2, title: "Is it an offer or merely an invitation?", anchor: "ICA ss 2(a), 2(b)", game: "Who Holds the Trigger" },
+      { id: 7, world: 2, title: "Can a promise be made to the whole world?", anchor: "ICA ss 2(a), 8", game: "The Standing Offer Ledger" },
+      { id: 8, world: 2, title: "Can someone accept an offer without knowing about it?", anchor: "ICA ss 3, 4, 8", game: "The Knowledge Ledger" },
+      { id: 9, world: 2, title: "Did the reply accept the offer or destroy it?", anchor: "ICA ss 2(b), 7", game: "The Reply That Kills" },
+      { id: 10, world: 2, title: "Can conduct amount to acceptance?", anchor: "ICA ss 8, 9", game: "Taking Without Taking" },
+      { id: 11, world: 2, title: "At what precise moment is acceptance complete?", anchor: "ICA ss 3, 4", game: "The Four-Clock Problem" },
+      { id: 12, world: 2, title: "Can an offeror prescribe the method of acceptance - or declare silence to be acceptance?", anchor: "ICA ss 7(2), 8, 9", game: "The Objection Window" },
       { id: 13, world: 2, title: "Who wins the revocation race?", anchor: "ICA ss 4–6", game: "Revocation Race" },
-      { id: 14, world: 2, title: "Must a contract be written, signed or registered?", anchor: "ICA s 10; IT Act ss 4, 5, 10A", game: "Formality Checkpoint" },
-      { id: 15, world: 2, title: "When does an offer die without express revocation?", anchor: "ICA s 6", game: "Offer Survival Meter" },
-      { id: 16, world: 2, title: "Did the negotiations ever become a completed agreement?", anchor: "ICA ss 2(e), 7, 10, 29", game: "Deal-Room Reconstruction" },
-      { id: 17, world: 3, title: "What can count as consideration?", anchor: "ICA ss 2(d), 10", game: "Consideration Builder" },
-      { id: 18, world: 3, title: "Whose act can provide consideration?", anchor: "ICA s 2(d)", game: "Three-Person Bargain" },
-      { id: 19, world: 3, title: "Can an earlier act support a later promise?", anchor: "ICA s 2(d)", game: "Sequence Editor" },
-      { id: 20, world: 3, title: "Is consideration always necessary?", anchor: "ICA ss 10, 25", game: "Enforceability Gate" },
-      { id: 21, world: 3, title: "Which promises survive without consideration?", anchor: "ICA s 25(1)–(3)", game: "Exception Vault" },
-      { id: 22, world: 3, title: "Must consideration be economically adequate?", anchor: "ICA s 25 Explanation 2; ss 14, 16", game: "Unequal Bargain Simulator" },
-      { id: 23, world: 3, title: "Can a creditor accept less or waive part of performance without fresh consideration?", anchor: "ICA s 63; ss 25, 62", game: "Debt Settlement Strategy" },
-      { id: 24, world: 4, title: "Can a minor enter a contract?", anchor: "ICA ss 10–11; Majority Act s 3", game: "Age Verification Game" },
-      { id: 25, world: 4, title: "Can a defective minor’s transaction be ratified or unwound later?", anchor: "ICA ss 11, 65; SRA s 33", game: "Birthday Timeline" },
-      { id: 26, world: 4, title: "Was the person of sound mind at the moment of contracting?", anchor: "ICA ss 11–12", game: "Capacity Clock" },
-      { id: 27, world: 4, title: "Who pays for necessaries supplied to an incapable person?", anchor: "ICA s 68", game: "Necessaries Budget" },
-      { id: 28, world: 5, title: "Did the parties agree upon the same thing in the same sense?", anchor: "ICA s 13", game: "Split-Screen Agreement" },
-      { id: 29, world: 5, title: "Was consent free - and did the defect cause the agreement?", anchor: "ICA ss 14, 19", game: "Consent Diagnostic" },
-      { id: 30, world: 5, title: "Was the pressure legally coercive?", anchor: "ICA ss 15, 19, 72", game: "Property Hostage Negotiation" },
-      { id: 31, world: 5, title: "When does influence become undue?", anchor: "ICA ss 16(1)–(2), 19A", game: "Trusted Adviser Role-Play" },
-      { id: 32, world: 5, title: "Who must prove that the transaction was fair?", anchor: "ICA ss 16(3), 19A", game: "Evidence Balance" },
-      { id: 33, world: 5, title: "Was it a lie, concealment or promise never intended to be kept?", anchor: "ICA ss 17, 19", game: "Fraud Investigation Board" },
-      { id: 34, world: 5, title: "When does silence become fraudulent?", anchor: "ICA s 17 Explanation; s 19", game: "Disclosure Switch" },
-      { id: 35, world: 5, title: "Was the false statement fraud or misrepresentation?", anchor: "ICA ss 17–19", game: "Hidden Mental-State Game" },
-      { id: 36, world: 5, title: "What if both parties share the same essential factual mistake?", anchor: "ICA ss 20, 65", game: "Fact Replacement Lab" },
-      { id: 37, world: 5, title: "What if only one party is mistaken, or the mistake concerns law?", anchor: "ICA ss 21–22; case law", game: "Identity-Switch Checkout" },
-      { id: 38, world: 6, title: "Are the consideration and object lawful?", anchor: "ICA s 23", game: "Transaction Scanner" },
-      { id: 39, world: 6, title: "Does the agreement break or defeat the law indirectly?", anchor: "ICA s 23", game: "Compliance Maze" },
-      { id: 40, world: 6, title: "When do injury, immorality or public policy defeat a bargain?", anchor: "ICA s 23", game: "Public-Policy Council" },
+      { id: 14, world: 2, title: "Must a contract be written, signed or registered?", anchor: "ICA s 10; IT Act ss 4, 5, 10A", game: "The Formality Router" },
+      { id: 15, world: 2, title: "When does an offer die without express revocation?", anchor: "ICA s 6", game: "Offer Decay" },
+      { id: 16, world: 2, title: "Did the negotiations ever become a completed agreement?", anchor: "ICA ss 2(e), 7, 10, 29", game: "Deal Room Forensics" },
+      { id: 17, world: 3, title: "What can count as consideration?", anchor: "ICA ss 2(d), 10", game: "At the Promisor's Desire" },
+      { id: 18, world: 3, title: "Whose act can provide consideration?", anchor: "ICA s 2(d)", game: "The Third Purse" },
+      { id: 19, world: 3, title: "Can an earlier act support a later promise?", anchor: "ICA s 2(d)", game: "The Sequence Ledger" },
+      { id: 20, world: 3, title: "Is consideration always necessary?", anchor: "ICA ss 10, 25", game: "The Enforceability Gate" },
+      { id: 21, world: 3, title: "Which promises survive without consideration?", anchor: "ICA s 25(1)–(3)", game: "The Exception Vault" },
+      { id: 22, world: 3, title: "Must consideration be economically adequate?", anchor: "ICA s 25 Explanation 2; ss 14, 16", game: "The Cheap Sale" },
+      { id: 23, world: 3, title: "Can a creditor accept less or waive part of performance without fresh consideration?", anchor: "ICA s 63; ss 25, 62", game: "The Remission Desk" },
+      { id: 24, world: 4, title: "Can a minor enter a contract?", anchor: "ICA ss 10–11; Majority Act s 3", game: "The Void Asset" },
+      { id: 25, world: 4, title: "Can a defective minor’s transaction be ratified or unwound later?", anchor: "ICA ss 11, 65; SRA s 33", game: "The Birthday Ledger" },
+      { id: 26, world: 4, title: "Was the person of sound mind at the moment of contracting?", anchor: "ICA ss 11–12", game: "The Capacity Clock" },
+      { id: 27, world: 4, title: "Who pays for necessaries supplied to an incapable person?", anchor: "ICA s 68", game: "The Necessaries Budget" },
+      { id: 28, world: 5, title: "Did the parties agree upon the same thing in the same sense?", anchor: "ICA s 13", game: "Two Screens" },
+      { id: 29, world: 5, title: "Was consent free - and did the defect cause the agreement?", anchor: "ICA ss 14, 19", game: "The Causal Map" },
+      { id: 30, world: 5, title: "Was the pressure legally coercive?", anchor: "ICA ss 15, 19, 72", game: "The Held Consignment" },
+      { id: 31, world: 5, title: "When does influence become undue?", anchor: "ICA ss 16(1)–(2), 19A", game: "The Trusted Adviser" },
+      { id: 32, world: 5, title: "Who must prove that the transaction was fair?", anchor: "ICA ss 16(3), 19A", game: "The Tilting Scale" },
+      { id: 33, world: 5, title: "Was it a lie, concealment or promise never intended to be kept?", anchor: "ICA ss 17, 19", game: "The Intention Reconstruction" },
+      { id: 34, world: 5, title: "When does silence become fraudulent?", anchor: "ICA s 17 Explanation; s 19", game: "The Disclosure Switch" },
+      { id: 35, world: 5, title: "Was the false statement fraud or misrepresentation?", anchor: "ICA ss 17–19", game: "The Same Words Twice" },
+      { id: 36, world: 5, title: "What if both parties share the same essential factual mistake?", anchor: "ICA ss 20, 65", game: "The Assumption Lab" },
+      { id: 37, world: 5, title: "What if only one party is mistaken, or the mistake concerns law?", anchor: "ICA ss 21–22; case law", game: "The Wrong Counterparty" },
+      { id: 38, world: 6, title: "Are the consideration and object lawful?", anchor: "ICA s 23", game: "The Two-Part Scanner" },
+      { id: 39, world: 6, title: "Does the agreement break or defeat the law indirectly?", anchor: "ICA s 23", game: "The Compliance Maze" },
+      { id: 40, world: 6, title: "When do injury, immorality or public policy defeat a bargain?", anchor: "ICA s 23", game: "The Precedent Hand" },
       { id: 41, world: 6, title: "Can the lawful part of a mixed bargain be saved?", anchor: "ICA ss 24, 57–58", game: "Clause Surgery" },
-      { id: 42, world: 6, title: "Can a contract restrict marriage or trade?", anchor: "ICA ss 26–27", game: "Exit-Clause Negotiation" },
-      { id: 43, world: 6, title: "Can a contract prevent a party from approaching a court?", anchor: "ICA s 28; Arbitration Act s 7", game: "Dispute-Clause Review" },
-      { id: 44, world: 6, title: "Can a court rescue a vague bargain?", anchor: "ICA s 29", game: "Missing-Term Puzzle" },
-      { id: 45, world: 6, title: "Is the transaction a wager or a contingent contract?", anchor: "ICA ss 30–36", game: "Event-Market Simulator" },
-      { id: 46, world: 7, title: "Was the statement a term, representation, sales puff or essential promise?", anchor: "ICA ss 17–19, 39, 55, 73", game: "Sales-Pitch Evidence Board" },
-      { id: 47, world: 7, title: "What did the parties promise expressly or by implication?", anchor: "ICA ss 9, 29, 37; case law", game: "Contract Gap Repair" },
-      { id: 48, world: 7, title: "Did the hidden standard terms become part of the contract?", anchor: "ICA ss 10, 13–14; CPA s 2(46)", game: "Ticket-and-QR Scavenger" },
-      { id: 49, world: 7, title: "Which interpretation of the words should control?", anchor: "ICA ss 9, 29; CPA s 2(46)", game: "Three-Reading Court" },
-      { id: 50, world: 7, title: "Can a business exclude liability or impose a one-sided term?", anchor: "ICA ss 23, 28; CPA ss 2(46), 49, 59", game: "Unfair-Term Regulator" },
-      { id: 51, world: 7, title: "Did the user genuinely consent online?", anchor: "ICA ss 3–9, 13–19; IT Act; CPA; Dark Patterns Guidelines", game: "Interface A/B Test" },
-      { id: 52, world: 8, title: "Who must perform, and who bears a joint promise?", anchor: "ICA ss 37, 40–45", game: "Project Responsibility Map" },
-      { id: 53, world: 8, title: "Was a valid offer of performance made?", anchor: "ICA ss 38, 46–50, 67", game: "Delivery-Day Logistics" },
-      { id: 54, world: 8, title: "Which reciprocal promise must be performed first?", anchor: "ICA ss 51–54", game: "Turn-Based Construction Game" },
+      { id: 42, world: 6, title: "Can a contract restrict marriage or trade?", anchor: "ICA ss 26–27", game: "The Exit Clause" },
+      { id: 43, world: 6, title: "Can a contract prevent a party from approaching a court?", anchor: "ICA s 28; Arbitration Act s 7", game: "The Clause Review Desk" },
+      { id: 44, world: 6, title: "Can a court rescue a vague bargain?", anchor: "ICA s 29", game: "The Machinery Workshop" },
+      { id: 45, world: 6, title: "Is the transaction a wager or a contingent contract?", anchor: "ICA ss 30–36", game: "The Event Desk" },
+      { id: 46, world: 7, title: "Was the statement a term, representation, sales puff or essential promise?", anchor: "ICA ss 17–19, 39, 55, 73", game: "The Demonstration Room" },
+      { id: 47, world: 7, title: "What did the parties promise expressly or by implication?", anchor: "ICA ss 9, 29, 37; case law", game: "The Gap Repair Shop" },
+      { id: 48, world: 7, title: "Did the hidden standard terms become part of the contract?", anchor: "ICA ss 10, 13–14; CPA s 2(46)", game: "The Notice Line" },
+      { id: 49, world: 7, title: "Which interpretation of the words should control?", anchor: "ICA ss 9, 29; CPA s 2(46)", game: "The Three Readings" },
+      { id: 50, world: 7, title: "Can a business exclude liability or impose a one-sided term?", anchor: "ICA ss 23, 28; CPA ss 2(46), 49, 59", game: "The Redline Desk" },
+      { id: 51, world: 7, title: "Did the user genuinely consent online?", anchor: "ICA ss 3–9, 13–19; IT Act; CPA; Dark Patterns Guidelines", game: "The A/B Checkout" },
+      { id: 52, world: 8, title: "Who must perform, and who bears a joint promise?", anchor: "ICA ss 37, 40–45", game: "The Contribution Board" },
+      { id: 53, world: 8, title: "Was a valid offer of performance made?", anchor: "ICA ss 38, 46–50, 67", game: "Delivery Day" },
+      { id: 54, world: 8, title: "Which reciprocal promise must be performed first?", anchor: "ICA ss 51–54", game: "The Order of Play" },
       { id: 55, world: 8, title: "Does delay terminate the contract or merely generate compensation?", anchor: "ICA s 55", game: "Deadline Triage" },
-      { id: 56, world: 8, title: "Which of several debts did a payment discharge?", anchor: "ICA ss 59–61", game: "Payment Allocation Board" },
-      { id: 57, world: 8, title: "Can the parties replace, alter or end their contract?", anchor: "ICA ss 62, 66; s 63", game: "Renegotiation Lab" },
-      { id: 58, world: 8, title: "Was performance impossible from the beginning or frustrated later?", anchor: "ICA ss 56, 65", game: "Crisis Deck" },
-      { id: 59, world: 9, title: "Is this an actual breach or anticipatory repudiation?", anchor: "ICA ss 39, 73, 75", game: "Crisis Inbox" },
-      { id: 60, world: 9, title: "What position should damages place the claimant in?", anchor: "ICA s 73", game: "Counterfactual Damages Calculator" },
-      { id: 61, world: 9, title: "Is the claimed loss caused, foreseeable and reasonably avoidable?", anchor: "ICA s 73 and Explanation", game: "Loss-Filter Pipeline" },
-      { id: 62, world: 9, title: "Does the amount written into the contract control compensation?", anchor: "ICA s 74; SRA s 23", game: "Damages-Clause Stress Test" },
-      { id: 63, world: 9, title: "Should the claimant demand performance, replacement performance or money?", anchor: "SRA ss 10, 14, 16, 20–23; ICA s 73", game: "Remedy Strategy Game" },
-      { id: 64, world: 9, title: "Which corrective or preventive remedy fits the problem?", anchor: "SRA ss 26–33, 36–42; ICA ss 64–66, 75", game: "Remedy Courtroom" },
-      { id: 65, world: 10, title: "Can a person who was not a contracting party sue on the promise?", anchor: "ICA ss 2(d), 2(h), 73; SRA s 15(a)", game: "Contract Network" },
-      { id: 66, world: 10, title: "When may a third-party beneficiary nevertheless enforce the arrangement?", anchor: "SRA ss 11, 15, 19; Trusts Act; TPA s 40", game: "Privity Passport" },
-      { id: 67, world: 10, title: "Must benefits be returned when a transaction is rescinded or becomes void?", anchor: "ICA ss 64–65; SRA ss 30, 33", game: "Transaction Unwinder" },
-      { id: 68, world: 10, title: "Can a useful act create an obligation without an agreement?", anchor: "ICA ss 69–70", game: "Community Expense Allocator" },
-      { id: 69, world: 10, title: "Must money or property transferred by mistake or coercion be restored?", anchor: "ICA s 72", game: "Payment-Recovery Desk" }
+      { id: 56, world: 8, title: "Which of several debts did a payment discharge?", anchor: "ICA ss 59–61", game: "The Allocation Board" },
+      { id: 57, world: 8, title: "Can the parties replace, alter or end their contract?", anchor: "ICA ss 62, 66; s 63", game: "The Renegotiation Lab" },
+      { id: 58, world: 8, title: "Was performance impossible from the beginning or frustrated later?", anchor: "ICA ss 56, 65", game: "The Crisis Ledger" },
+      { id: 59, world: 9, title: "Is this an actual breach or anticipatory repudiation?", anchor: "ICA ss 39, 73, 75", game: "The Election Desk" },
+      { id: 60, world: 9, title: "What position should damages place the claimant in?", anchor: "ICA s 73", game: "The Counterfactual Build" },
+      { id: 61, world: 9, title: "Is the claimed loss caused, foreseeable and reasonably avoidable?", anchor: "ICA s 73 and Explanation", game: "The Loss Pipeline" },
+      { id: 62, world: 9, title: "Does the amount written into the contract control compensation?", anchor: "ICA s 74; SRA s 23", game: "The Ceiling You Built" },
+      { id: 63, world: 9, title: "Should the claimant demand performance, replacement performance or money?", anchor: "SRA ss 10, 14, 16, 20–23; ICA s 73", game: "The Remedy Fork" },
+      { id: 64, world: 9, title: "Which corrective or preventive remedy fits the problem?", anchor: "SRA ss 26–33, 36–42; ICA ss 64–66, 75", game: "The Remedy Hand" },
+      { id: 65, world: 10, title: "Can a person who was not a contracting party sue on the promise?", anchor: "ICA ss 2(d), 2(h), 73; SRA s 15(a)", game: "The Standing Map" },
+      { id: 66, world: 10, title: "When may a third-party beneficiary nevertheless enforce the arrangement?", anchor: "SRA ss 11, 15, 19; Trusts Act; TPA s 40", game: "The Privity Passport" },
+      { id: 67, world: 10, title: "Must benefits be returned when a transaction is rescinded or becomes void?", anchor: "ICA ss 64–65; SRA ss 30, 33", game: "The Unwinding Desk" },
+      { id: 68, world: 10, title: "Can a useful act create an obligation without an agreement?", anchor: "ICA ss 69–70", game: "The Unbargained Benefit" },
+      { id: 69, world: 10, title: "Must money or property transferred by mistake or coercion be restored?", anchor: "ICA s 72", game: "The Recovery Desk" }
     ];
 
     const range = (start, end) => Array.from({ length: end - start + 1 }, (_, index) => start + index);
@@ -1834,7 +1838,7 @@ svg {
 
     function moduleHref(module) {
       return module.id === 1
-        ? "contractos-promise-machine.html"
+        ? "module-01.html"
         : `module-${padded(module.id)}.html`;
     }
 
